@@ -1,0 +1,8 @@
+<div class="radio-select-filter">
+	<% _.each(model.options, function(v,k) { %>
+	<div class="options">
+		<input id="<% print(model.id + '.' + k); %>" type="radio" name="<%= model.id %>" value="<%= v %>"> 
+		<label for="<%= model.id %>"> <%= k %></label>
+	</div>
+	<% }); %>
+</div>
