@@ -9,7 +9,13 @@ var SelectFilterModel = FilterModel.extend({
 	defaults: _.extend({}, FilterModel.prototype.defaults,
 				{
 				  'options': {}
-			  })
+			  }),
+
+	updateRestrictions: function(restrictions){
+							_.extend(this.get('restrictions'), restrictions);	
+							this.trigger('change change:restrictions');
+						}
+
 
 });
 
