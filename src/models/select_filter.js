@@ -8,7 +8,8 @@ var SelectFilterModel = FilterModel.extend({
 
 	defaults: _.extend({}, FilterModel.prototype.defaults,
 				{
-				  'options': {}
+				  type: 'select',
+				  options: {}
 			  }),
 
 	updateRestrictions: function(restrictions){

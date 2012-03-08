@@ -1,11 +1,13 @@
 define([
 	"use!underscore",
 	"./select_filter",
+	"./filter_collection",
 ], 
-function(_, SelectFilterModel){
+function(_, SelectFilterModel, FilterCollection){
 
 	models = {
-		select_filter: SelectFilterModel
+		'SelectFilterModel': SelectFilterModel,
+		'FilterCollection': FilterCollection
 	};
 
 	return models;
