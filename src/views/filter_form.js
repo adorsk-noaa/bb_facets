@@ -22,7 +22,8 @@ function($, Backbone, _, template, RadioSelectFilterView){
 
 		addOne: function(filter) {
 		  var view = this.getViewForFilter(filter);
-		  $(".filter-widgets", $(this.el)).append(view.render().el);
+		  widget_el = view.render().el;
+		  $(".filter-widgets", $(this.el)).append(widget_el);
 		},	
 
 		addAll: function() {

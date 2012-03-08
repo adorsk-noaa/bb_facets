@@ -16,12 +16,11 @@ var FilterCollection = Backbone.Collection.extend({
 			return filter_model.get('restrictions');
 		});
 		formatted_restrictions = this.formatRestrictions(restrictions);
-		console.log(formatted_restrictions);
 		return formatted_restrictions;
 	},
 
 	formatRestrictions: function(restrictions){
-		return restrictions.join('&');
+		return _.filter(restrictions,function(r){return r != null;}).join('&');
 	}
 
 });

@@ -28,8 +28,6 @@ var SelectFilterModel = FilterModel.extend({
 		return formatted_restrictions;
 	}
 
-
-
 });
 
 return SelectFilterModel;
