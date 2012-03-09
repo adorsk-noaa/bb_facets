@@ -7,14 +7,11 @@ var FilterModel = Backbone.Model.extend({
 
 	defaults: {
 				type: '',
-				formatted_restrictions: {}
+				restrictions: {}
 			  },
 
 	initialize: function(){
-		// Unformatted restrictions.
-		this._restrictions = {};
 	}
-	
 
 });
 

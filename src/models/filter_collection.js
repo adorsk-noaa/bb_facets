@@ -15,13 +15,8 @@ var FilterCollection = Backbone.Collection.extend({
 		restrictions = this.map(function(filter_model){
 			return filter_model.get('restrictions');
 		});
-		formatted_restrictions = this.formatRestrictions(restrictions);
-		return formatted_restrictions;
+		return restrictions;
 	},
-
-	formatRestrictions: function(restrictions){
-		return _.filter(restrictions,function(r){return r != null;}).join('&');
-	}
 
 });
 
