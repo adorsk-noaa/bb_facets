@@ -1,13 +1,13 @@
 define([
 	"use!underscore",
-	"./radio_select_filter",
-	"./filter_form"
+	"./radio_select_facet",
+	"./facet_set"
 ], 
-function(_, RadioSelectFilterView, FilterFormView){
+function(_, RadioSelectFacetView, FacetSetView){
 
 	views = {
-		RadioSelectFilterView: RadioSelectFilterView,
-		FilterFormView: FilterFormView
+		RadioSelectFacetView: RadioSelectFacetView,
+		FacetSetView: FacetSetView
 	};
 
 	return views;

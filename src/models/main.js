@@ -1,13 +1,12 @@
 define([
 	"use!underscore",
-	"./select_filter",
-	"./filter_collection",
+	"./facet_collection",
 ], 
-function(_, SelectFilterModel, FilterCollection){
+function(_, FacetModel, FacetCollection){
 
 	models = {
-		'SelectFilterModel': SelectFilterModel,
-		'FilterCollection': FilterCollection
+		'FacetModel': FacetModel,
+		'FacetCollection': FacetCollection
 	};
 
 	return models;

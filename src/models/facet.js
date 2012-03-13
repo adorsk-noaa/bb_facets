@@ -3,7 +3,7 @@ define([
 ], 
 function(Backbone){
 
-var FilterModel = Backbone.Model.extend({
+var FacetModel = Backbone.Model.extend({
 
 	defaults: {
 				type: '',
@@ -15,7 +15,7 @@ var FilterModel = Backbone.Model.extend({
 
 });
 
-return FilterModel;
+return FacetModel;
 
 });
 
