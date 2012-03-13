@@ -33,6 +33,6 @@ function($, Backbone, _, FacetView, template){
 
 	});
 
-	return RadioSelectFacetView;
+	return ListFacetView;
 });
 		

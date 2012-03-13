@@ -13,10 +13,10 @@ function($, Backbone, _, template, RadioSelectFacetView){
 			this.model.on('reset', this.renderForm, this);
 			this.model.on('reset', this.addAll, this);
 			this.model.fetch();
-			//this.renderFacetSet();
+			//this.renderFacetCollection();
 		},
 
-		renderFacetSet: function(){
+		renderFacetCollectoin: function(){
 			console.log("renderForm");
 			form_html = _.template(template, {model: this.model.toJSON()});
 			$(this.el).html(form_html);

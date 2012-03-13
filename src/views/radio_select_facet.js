@@ -3,20 +3,20 @@ define([
 	"jquery",
 	"use!backbone",
 	"use!underscore",
-	"./filter",
-	"text!./templates/radio_select_filter.html",
+	"./facet",
+	"text!./templates/radio_select_facet.html",
 		],
-function($, Backbone, _, FilterView, template){
+function($, Backbone, _, FacetView, template){
 
-	var RadioSelectFilterView = FilterView.extend({
+	var RadioSelectFacetView = FacetView.extend({
 
 		events: {
 			// Update model when widget changes.
-			"change .radio-select-filter-widget": 'updateRestrictions'
+			"change .radio-select-facet-widget": 'updateRestrictions'
 		},
 
 		initialize: function(){
-			FilterView.prototype.initialize.call(this, arguments);
+			FacetView.prototype.initialize.call(this, arguments);
 			this.renderWidget();
 		},
 		
@@ -40,6 +40,6 @@ function($, Backbone, _, FilterView, template){
 
 	});
 
-	return RadioSelectFilterView;
+	return RadioSelectFacetView;
 });
 		

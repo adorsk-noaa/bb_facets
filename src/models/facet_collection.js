@@ -8,7 +8,11 @@ var FacetCollection = Backbone.Collection.extend({
 	model: FacetModel,
 
 	initialize: function(models, options){
-		this.url = options.url
+
+		if (options){
+			this.url = options.url;
+		}
+
 		this.on('change', this.getRestrictions, this);
 	},
 

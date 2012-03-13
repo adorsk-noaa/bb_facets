@@ -3,17 +3,16 @@ define([
 	"jquery",
 	"use!backbone",
 	"use!underscore",
-	"./filter",
 		],
 function($, Backbone, _){
 
-	var FilterView = Backbone.View.extend({
+	var FacetView = Backbone.View.extend({
 
 		initialize: function(){
-						console.log('FilterView:initialize');
+						console.log('FacetView:initialize');
 					},
 	});
 
-	return FilterView;
+	return FacetView;
 });
 		
