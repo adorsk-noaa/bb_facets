@@ -7,7 +7,8 @@ function(Backbone, FilterModel){
 var FilterCollection = Backbone.Collection.extend({
 	model: FilterModel,
 
-	initialize: function(){
+	initialize: function(models, options){
+		this.url = options.url
 		this.on('change', this.getRestrictions, this);
 	},
 

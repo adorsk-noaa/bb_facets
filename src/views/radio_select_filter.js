@@ -11,15 +11,14 @@ function($, Backbone, _, FilterView, template){
 	var RadioSelectFilterView = FilterView.extend({
 
 		events: {
-					// Update model when widget changes.
-					"change .radio-select-filter-widget": 'updateRestrictions'
-				},
+			// Update model when widget changes.
+			"change .radio-select-filter-widget": 'updateRestrictions'
+		},
 
 		initialize: function(){
-						FilterView.prototype.initialize.call(this, arguments);
-						console.log('RadioSelectFilterView:initialize');
-						this.renderWidget();
-					},
+			FilterView.prototype.initialize.call(this, arguments);
+			this.renderWidget();
+		},
 		
 		renderWidget: function(){
 			widget_html = _.template(template, {model: this.model.toJSON()});
@@ -28,15 +27,16 @@ function($, Backbone, _, FilterView, template){
 		},
 
 		getWidgetValues: function(){
-							 widget_values = {};
-							 widget_value = $('input[name=' + this.model.id + ']:checked', $(this.el)).val();
-							 widget_values[this.model.id] = widget_value;
-							 return widget_values;
-						},
+			 widget_values = {};
+			 widget_value = $('input[name=' + this.model.id + ']:checked', $(this.el)).val();
+			 widget_values[this.model.id] = widget_value;
+			 return widget_values;
+		},
 
 		updateRestrictions: function(){
-									this.model.updateRestrictions(this.getWidgetValues());
-							}
+			restrictions = this.getWidgetValues();
+			this.model.set({restrictions: restrictions});
+		}
 
 	});
 

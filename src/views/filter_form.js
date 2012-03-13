@@ -10,11 +10,14 @@ function($, Backbone, _, template, RadioSelectFilterView){
 	var FilterFormView = Backbone.View.extend({
 
 		initialize: function(){
-						this.renderForm();
-						this.addAll();
-					},
+			this.model.on('reset', this.renderForm, this);
+			this.model.on('reset', this.addAll, this);
+			this.model.fetch();
+			//this.renderForm();
+		},
 
 		renderForm: function(){
+			console.log("renderForm");
 			form_html = _.template(template, {model: this.model.toJSON()});
 			$(this.el).html(form_html);
 			return this;
@@ -34,6 +37,13 @@ function($, Backbone, _, template, RadioSelectFilterView){
 
 			// Select filters.	
 			if (filter.get('type') == 'select'){
+				return new RadioSelectFilterView({
+					model: filter
+				});
+			}
+
+			// Multiselect filters.	
+			if (filter.get('type') == 'multiselect'){
 				return new RadioSelectFilterView({
 					model: filter
 				});
