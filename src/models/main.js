@@ -1,5 +1,6 @@
 define([
 	"use!underscore",
+	"./facet",
 	"./facet_collection",
 ], 
 function(_, FacetModel, FacetCollection){
