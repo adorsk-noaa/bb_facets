@@ -6,8 +6,8 @@
 				<tbody>
 					<tr>
 						<td>
-							<a bind="resetButton" class="facet-choice-link" href="javascript:{}" style="display: none;">reset</a>
-							<span bind="titleSpan">TITLE</span> 
+							<a class="facet-choice-link facet-reset-button" href="javascript:{}" style="">reset</a>
+							<span class="facet-title">TITLE</span> 
 						</td> 
 					</tr> 
 				</tbody> 
@@ -16,22 +16,22 @@
 	</div> 
 
 
-	<div style="display: block;" bind="controlsDiv" class="facet-controls">
-		<a href="javascript:{}" class="action" bind="choiceCountContainer">8 choices</a>
-		<span bind="sortGroup" class="facet-controls-sortControls">
-			Sort by: <a bind="sortByNameLink" href="javascript:{}" class="selected">name</a><a bind="sortByCountLink" href="javascript:{}" class="action">count</a>
-		</span> 
+	<div style="display: block;" class="facet-controls">
+		<span> 8 choices</span>
 	</div> 
 
 
-	<div bind="bodyDiv" class="facet-body facet-body-scrollable ui-resizable">
-		<div bind="bodyInnerDiv" class="facet-body-inner">
+	<div class="facet-body facet-body-scrollable ui-resizable">
+		<div class="facet-body-inner facet-choices">
 
-			<div choiceindex="0" class="facet-choice">
-				<a style="visibility: hidden;" class="facet-choice-link facet-choice-toggle" href="javascript:{}">include</a><a style="visibility: hidden;" class="facet-choice-link facet-choice-edit" href="javascript:{}">edit</a><a class="facet-choice-label" href="javascript:{}">302102</a>
-				<span class="facet-choice-count">
-					1
-				</span> 
+			<div class="facet-choice" id="facet-choice--302101">
+				<a class="facet-choice-label" href="javascript:{}">
+					<label for="input--302101">302102</label>
+				</a>
+				<input type="checkbox" id="input--302101" data-choice_id="302101" value="foo">
+				<!--
+				<span class="facet-choice-count">1</span> 
+				-->
 			</div> 
 		</div> 
 
