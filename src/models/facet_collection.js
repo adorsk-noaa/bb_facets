@@ -12,13 +12,12 @@ var FacetCollection = Backbone.Collection.extend({
 		if (options){
 			this.url = options.url;
 		}
-
-		this.on('change', this.getRestrictions, this);
 	},
 
 	getRestrictions: function(){
-		restrictions = this.map(function(facet_model){
-			return facet_model.get('restrictions');
+		restrictions = {};
+		this.each(function(facet_model){
+			restrictions[facet_model.id] = facet_model.get('restrictions');
 		});
 		return restrictions;
 	},

@@ -13,13 +13,10 @@ function($, Backbone, _, ui, FacetView, template){
 
 		events: {
 
-			// Update model when widget changes.
-			"change .facet-choices": "updateRestrictions",
+			// Run updates when choices change.
+			"change .facet-choice": "update",
 
-			// Update reset button when widget changes.
-			"change .facet-choices": "updateResetButton",
-
-			// Reset choices.
+			// Reset choices when the rest button is clicked.
 			"click .facet-reset-button": "resetRestrictions"
 		},
 
@@ -37,7 +34,6 @@ function($, Backbone, _, ui, FacetView, template){
 			$(this.el).html(widget_html);
 
 			// Make the main container resizeable.
-			//
 			r = $(".facet-body", $(this.el)).resizable({
 				minHeight: 30,
 				handles: 's',
@@ -65,15 +61,19 @@ function($, Backbone, _, ui, FacetView, template){
 			 return widget_values;
 		},
 
+		update: function(){
+			this.updateRestrictions();
+			this.updateResetButton();
+		},
+
 		updateRestrictions: function(){
-			restrictions = this.getWidgetValues();
+			restrictions = _.values(this.getWidgetValues());
 			this.model.set({restrictions: restrictions});
 		},
 
 		updateResetButton: function(){
-
 			// If anything was checked, show reset button.
-			if( $('.facet-choice input[type=checkbox]:checked', $(this.el)) ){
+			if( $('.facet-choice input[type=checkbox]:checked', $(this.el)).length > 0 ){
 				$('.facet-reset-button', $(this.el)).css('visibility', 'visible');
 			}
 			// Otherwise hide reset button.
@@ -91,8 +91,7 @@ function($, Backbone, _, ui, FacetView, template){
 				facet_choice_el = $('#facet-choice--' + choice_id);
 				facet_choice_el.removeClass('facet-choice-selected');
 			});
-			this.updateRestrictions();
-			$('.facet-reset-button', $(this.el)).css('visibility', 'hidden');
+			this.update();
 		}
 
 	});
