@@ -45,7 +45,6 @@ function($, Backbone, _, ui, FacetView, template){
 					event.target.style.width = "auto"; // don't force the width
 				}
 			});
-			console.log(ui);
 
 			// Toggle classes on facets when they change.
 			$('.facet-choice', $(this.el)).on('change', function(event){

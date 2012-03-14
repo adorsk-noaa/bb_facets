@@ -9,7 +9,6 @@ function($, Backbone, _){
 	var FacetView = Backbone.View.extend({
 
 		initialize: function(){
-						console.log('FacetView:initialize');
 					},
 	});
 

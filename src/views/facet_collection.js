@@ -17,7 +17,6 @@ function($, Backbone, _, template, RadioSelectFacetView, ListFacetView){
 		},
 
 		renderFacetCollection: function(){
-			console.log("renderFacetCollection");
 			form_html = _.template(template, {model: this.model.toJSON()});
 			$(this.el).html(form_html);
 			return this;
