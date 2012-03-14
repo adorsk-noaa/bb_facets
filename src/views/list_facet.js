@@ -20,7 +20,11 @@ function($, Backbone, _, FacetView, template){
 
 		initialize: function(){
 			FacetView.prototype.initialize.call(this, arguments);
+		},
+
+		render: function(){
 			this.renderWidget();
+			return this;
 		},
 		
 		renderWidget: function(){

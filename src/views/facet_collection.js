@@ -3,21 +3,21 @@ define([
 	"use!backbone",
 	"use!underscore",
 	"text!./templates/facet_collection.html",
-	"./radio_select_facet"
+	"./radio_select_facet",
+	"./list_facet"
 		],
-function($, Backbone, _, template, RadioSelectFacetView){
+function($, Backbone, _, template, RadioSelectFacetView, ListFacetView){
 
 	var FacetCollectionView = Backbone.View.extend({
 
 		initialize: function(){
-			this.model.on('reset', this.renderForm, this);
+			this.renderFacetCollection();
 			this.model.on('reset', this.addAll, this);
 			this.model.fetch();
-			//this.renderFacetCollection();
 		},
 
-		renderFacetCollectoin: function(){
-			console.log("renderForm");
+		renderFacetCollection: function(){
+			console.log("renderFacetCollection");
 			form_html = _.template(template, {model: this.model.toJSON()});
 			$(this.el).html(form_html);
 			return this;
@@ -44,7 +44,7 @@ function($, Backbone, _, template, RadioSelectFacetView){
 
 			// Multiselect facets.	
 			if (facet.get('type') == 'multiselect'){
-				return new RadioSelectFacetView({
+				return new ListFacetView({
 					model: facet
 				});
 			}
