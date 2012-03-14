@@ -1,4 +1,4 @@
-<div class="facet-container" id="facet-0" style="display: block;">
+<div class="facet-container" id="facet-<%= model.id %>" style="display: block;">
 
 	<div class="facet-title">
 		<div class="grid-layout layout-tightest layout-full">
@@ -7,7 +7,7 @@
 					<tr>
 						<td>
 							<a class="facet-choice-link facet-reset-button" href="javascript:{}" style="">reset</a>
-							<span class="facet-title">TITLE</span> 
+							<span class="facet-title"><%= model.label %></span> 
 						</td> 
 					</tr> 
 				</tbody> 
@@ -17,22 +17,23 @@
 
 
 	<div style="display: block;" class="facet-controls">
-		<span> 8 choices</span>
+		<span> <%= model.options.length %> choices</span>
 	</div> 
 
 
 	<div class="facet-body facet-body-scrollable ui-resizable">
 		<div class="facet-body-inner facet-choices">
-
-			<div class="facet-choice" id="facet-choice--302101">
+			<% _.each(model.options, function(option,index) { %>
+			<div class="facet-choice" id="facet-choice--<%= option.id %>">
 				<a class="facet-choice-label" href="javascript:{}">
-					<label for="input--302101">302102</label>
+					<label for="input--<%= option.id %>"> <%= option.label %></label>
 				</a>
-				<input type="checkbox" id="input--302101" data-choice_id="302101" value="foo">
+				<input type="checkbox" id="input--<%= option.id %>" data-choice_id="<%= option.id %>" value="<%= option.value %>">
 				<!--
 				<span class="facet-choice-count">1</span> 
 				-->
 			</div> 
+			<% }); %>
 		</div> 
 
 		<div class="ui-resizable-handle ui-resizable-s" unselectable="on" style="-moz-user-select: none;">
