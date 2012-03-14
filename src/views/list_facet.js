@@ -11,8 +11,12 @@ function($, Backbone, _, FacetView, template){
 	var ListFacetView = FacetView.extend({
 
 		events: {
+
 			// Update model when widget changes.
 			"change .facet-choices": "updateRestrictions",
+
+			// Update reset button when widget changes.
+			"change .facet-choices": "updateResetButton",
 
 			// Reset choices.
 			"click .facet-reset-button": "resetRestrictions"
@@ -50,9 +54,20 @@ function($, Backbone, _, FacetView, template){
 		},
 
 		updateRestrictions: function(){
-			console.log('updateRestrictions');
 			restrictions = this.getWidgetValues();
 			this.model.set({restrictions: restrictions});
+		},
+
+		updateResetButton: function(){
+
+			// If anything was checked, show reset button.
+			if( $('.facet-choice input[type=checkbox]:checked', $(this.el)) ){
+				$('.facet-reset-button', $(this.el)).css('visibility', 'visible');
+			}
+			// Otherwise hide reset button.
+			else{
+				$('.facet-reset-button', $(this.el)).css('visibility', 'hidden');
+			}
 		},
 
 		resetRestrictions: function(){
@@ -65,6 +80,7 @@ function($, Backbone, _, FacetView, template){
 				facet_choice_el.removeClass('facet-choice-selected');
 			});
 			this.updateRestrictions();
+			$('.facet-reset-button', $(this.el)).css('visibility', 'hidden');
 		}
 
 	});
