@@ -3,10 +3,11 @@ define([
 	"jquery",
 	"use!backbone",
 	"use!underscore",
+	"use!ui",
 	"./facet",
 	"text!./templates/list_facet.html",
 		],
-function($, Backbone, _, FacetView, template){
+function($, Backbone, _, ui, FacetView, template){
 
 	var ListFacetView = FacetView.extend({
 
@@ -35,11 +36,23 @@ function($, Backbone, _, FacetView, template){
 			widget_html = _.template(template, {model: this.model.toJSON()});
 			$(this.el).html(widget_html);
 
-			// Toggle class when facets change.
+			// Make the main container resizeable.
+			//
+			r = $(".facet-body", $(this.el)).resizable({
+				minHeight: 30,
+				handles: 's',
+				stop: function(event, ui) {
+					event.target.style.width = "auto"; // don't force the width
+				}
+			});
+			console.log(ui);
+
+			// Toggle classes on facets when they change.
 			$('.facet-choice', $(this.el)).on('change', function(event){
 				facet_choice_el = event.delegateTarget;
 				$(facet_choice_el).toggleClass('facet-choice-selected');
 			});
+
 			return this;
 		},
 

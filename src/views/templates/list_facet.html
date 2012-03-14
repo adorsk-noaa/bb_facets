@@ -11,7 +11,7 @@
 	</div> 
 
 
-	<div class="facet-body facet-body-scrollable ui-resizable">
+	<div class="facet-body facet-body-scrollable">
 		<div class="facet-body-inner facet-choices">
 			<% _.each(model.options, function(option,index) { %>
 			<div class="facet-choice" id="facet-choice--<%= option.id %>">
@@ -24,9 +24,6 @@
 				-->
 			</div> 
 			<% }); %>
-		</div> 
-
-		<div class="ui-resizable-handle ui-resizable-s" unselectable="on" style="-moz-user-select: none;">
 		</div> 
 
 	</div> 
