@@ -83,3 +83,149 @@
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
   }
+
+.facet-container {
+  display: block;
+  clear: both;
+  margin: 0 5px 7px;
+  background: @chrome_secondary;  
+  border: 1px solid @chrome_primary;
+  .rounded_corners(7px);
+
+  a {
+	text-decoration: none;
+  }
+
+}
+
+.facet-title {
+  padding: 3px 3px;
+  background: @chrome_primary;
+  font-weight: bold;
+  cursor: move;
+  border-bottom: 1px solid @chrome_primary;
+  .rounded_corners_top(6px);
+  
+  }
+
+.facet-controls {
+  position: relative;
+  font-size: 0.9em;
+  padding: 7px 5px;
+  background: @chrome_secondary;
+  border-bottom: 1px solid @chrome_primary;
+  }
+
+.facet-controls-button {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  }
+
+.facet-reset-button{
+  float: right;
+  padding-left: 5px;
+  padding-right: 5px;
+  font-size: 0.85em;
+  color: #4272db;
+  font-weight: normal;
+} 
+  
+.facet-body-scrollable {
+  height: 10em;
+  padding-bottom: 8px;
+  background: url(images/facet-resize-handle.png) center bottom no-repeat;
+  }
+
+.facet-body-inner {
+  background: #fff;
+  }
+  
+.facet-body-scrollable .facet-body-inner {
+  border-bottom: 1px solid @chrome_primary;
+  }
+
+.facet-body.facet-body-scrollable .ui-resizable-s {
+  bottom: -5px;
+  height: 15px;
+  }
+  
+.facet-body-scrollable .facet-body-inner {
+  height: 100%;
+  overflow: auto;
+  }
+
+.facet-body-controls {
+  font-size: 0.85em;
+  margin: 5px 0;
+  }
+
+.facet-choice {
+  padding: 2px 5px;
+  clear: both;
+
+  label {
+	cursor: auto;
+	display: block;
+	color: inherit;
+  }
+}
+
+.facet-choice:hover {
+  background: @fill_secondary;
+  }
+
+.facet-choice-selected .facet-choice-label {
+  font-weight: bold;
+  color: #ff6a00;
+  }
+
+.facet-choice-count, .facet-range-choice-count {
+  padding-left: 5px;
+  font-size: 0.85em;
+  color: @light_grey;
+  }
+
+.facet-choice-toggle {
+  float: right;
+  padding-left: 5px;
+  font-size: 0.85em;
+  color: @link_secondary;
+  font-weight: normal;
+  }
+
+.facet-range-body {
+  padding: 5px;
+  }
+
+.facet-range-message {
+  color: @metadata_grey;
+  }
+
+.facet-range-histogram {
+  overflow: hidden;
+  }
+
+.facet-range-status {
+  margin: 0 0 3px 0;
+  color: #000;
+  text-align: center;
+  }
+
+.facet-range-choices {
+  padding: 5px 0 30px 0;
+  }
+
+.facet-range-item {
+  float: left;
+  text-align: left;
+  padding: 0 4px;
+  }
+
+.facet-range-choice-label {
+  font-size: 0.85em;
+  }
+
+.facet-range-choice-count {
+  margin: -2px 0 0 16px;
+  }
