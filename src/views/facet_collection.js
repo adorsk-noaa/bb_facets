@@ -13,7 +13,6 @@ function($, Backbone, _, template, RadioSelectFacetView, ListFacetView){
 		initialize: function(){
 			this.renderFacetCollection();
 			this.model.on('reset', this.addAll, this);
-			this.model.fetch();
 		},
 
 		renderFacetCollection: function(){
