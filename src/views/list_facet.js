@@ -66,7 +66,6 @@ function($, Backbone, _, ui, FacetView, template, choices_template){
 			// Re-select choices which are still present.
 			var _this = this;
 			$('.facet-choice', $(this.el)).each(function(i, facet_choice_el){
-				console.log(facet_choice_el);
 				choice_id = $('input[type=checkbox]', $(facet_choice_el)).data('choice_id');
 				if (_this.selected_choices[choice_id]){
 					$(facet_choice_el).toggleClass('facet-choice-selected');
