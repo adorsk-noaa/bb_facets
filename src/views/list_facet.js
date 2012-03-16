@@ -15,7 +15,7 @@ function($, Backbone, _, ui, FacetView, template, choices_template){
 		events: {
 
 			// Run updates when choices change.
-			"change .facet-choice": "update",
+			"change .facet-choice": "onChoiceChange",
 
 			// Reset choices when the rest button is clicked.
 			"click .facet-reset-button": "resetRestrictions"
@@ -23,6 +23,9 @@ function($, Backbone, _, ui, FacetView, template, choices_template){
 
 		initialize: function(){
 			FacetView.prototype.initialize.call(this, arguments);
+
+			// For keeping track of selected choices.
+			this.selected_choices = {};
 
 			// Re-render when choices change.
 			this.model.on('change:choices', this.renderChoices, this);
@@ -60,10 +63,14 @@ function($, Backbone, _, ui, FacetView, template, choices_template){
 			choices_html = _.template(choices_template, {choices: choices});
 			$('.facet-choices', $(this.el)).html(choices_html);
 
-			// Toggle classes on facet choices when they change.
-			$('.facet-choice', $(this.el)).on('change', function(event){
-				facet_choice_el = event.delegateTarget;
-				$(facet_choice_el).toggleClass('facet-choice-selected');
+			// Re-select choices which are still present.
+			var _this = this;
+			$('.facet-choice', $(this.el)).each(function(i, facet_choice_el){
+				console.log(facet_choice_el);
+				choice_id = $('input[type=checkbox]', $(facet_choice_el)).data('choice_id');
+				if (_this.selected_choices[choice_id]){
+					$(facet_choice_el).toggleClass('facet-choice-selected');
+				}
 			});
 
 			// Update choices count.
@@ -83,7 +90,16 @@ function($, Backbone, _, ui, FacetView, template, choices_template){
 			 return widget_values;
 		},
 
-		update: function(){
+		onChoiceChange: function(event){
+
+			// Toggle selected class on choice.
+			facet_choice_el = event.currentTarget;
+			$(facet_choice_el).toggleClass('facet-choice-selected');
+
+			// Toggle choice selection state.
+			choice_id = $('input[type=checkbox]', $(facet_choice_el)).data('choice_id');
+			this.selected_choices[choice_id] = ! this.selected_choices[choice_id];
+
 			this.updateRestrictions();
 			this.updateResetButton();
 		},
