@@ -6,8 +6,9 @@ define([
 	"use!ui",
 	"./facet",
 	"text!./templates/list_facet.html",
+	"text!./templates/list_facet_choices.html",
 		],
-function($, Backbone, _, ui, FacetView, template){
+function($, Backbone, _, ui, FacetView, template, choices_template){
 
 	var ListFacetView = FacetView.extend({
 
@@ -22,10 +23,14 @@ function($, Backbone, _, ui, FacetView, template){
 
 		initialize: function(){
 			FacetView.prototype.initialize.call(this, arguments);
+
+			// Re-render when choices change.
+			this.model.on('change:choices', this.renderChoices, this);
 		},
 
 		render: function(){
 			this.renderWidget();
+			this.renderChoices();
 			return this;
 		},
 		
@@ -42,13 +47,30 @@ function($, Backbone, _, ui, FacetView, template){
 				}
 			});
 
-			// Toggle classes on facets when they change.
+
+			return this;
+		},
+
+		renderChoices: function(){
+
+			// Get choices from model.
+			choices = this.model.get('choices');
+
+			// Update choices.
+			choices_html = _.template(choices_template, {choices: choices});
+			$('.facet-choices', $(this.el)).html(choices_html);
+
+			// Toggle classes on facet choices when they change.
 			$('.facet-choice', $(this.el)).on('change', function(event){
 				facet_choice_el = event.delegateTarget;
 				$(facet_choice_el).toggleClass('facet-choice-selected');
 			});
 
-			return this;
+			// Update choices count.
+			$('.choices-count', $(this.el)).html(choices.length);
+
+			this.updateResetButton();
+
 		},
 
 		getWidgetValues: function(){

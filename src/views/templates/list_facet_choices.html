@@ -1,0 +1,8 @@
+<% _.each(choices, function(choice,index) { %>
+<div class="facet-choice" id="facet-choice--<%= choice.id %>">
+	<input class="facet-choice-toggle" type="checkbox" id="input--<%= choice.id %>" data-choice_id="<%= choice.id %>" value="<%= choice.value %>">
+	<a class="facet-choice-label" href="javascript:{}">
+		<label for="input--<%= choice.id %>"> <%= choice.label %></label>
+	</a>
+</div> 
+<% }); %>

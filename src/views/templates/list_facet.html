@@ -7,25 +7,13 @@
 
 
 	<div style="display: block;" class="facet-controls">
-		<span> <%= model.options.length %> choices</span>
+		<span><span class="choices-count"></span> choices</span>
 	</div> 
 
 
 	<div class="facet-body facet-body-scrollable">
 		<div class="facet-body-inner facet-choices">
-			<% _.each(model.options, function(option,index) { %>
-			<div class="facet-choice" id="facet-choice--<%= option.id %>">
-				<input class="facet-choice-toggle" type="checkbox" id="input--<%= option.id %>" data-choice_id="<%= option.id %>" value="<%= option.value %>">
-				<a class="facet-choice-label" href="javascript:{}">
-					<label for="input--<%= option.id %>"> <%= option.label %></label>
-				</a>
-				<!--
-				<span class="facet-choice-count">1</span> 
-				-->
-			</div> 
-			<% }); %>
 		</div> 
-
 	</div> 
 </div>
 

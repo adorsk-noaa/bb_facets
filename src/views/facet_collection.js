@@ -13,6 +13,7 @@ function($, Backbone, _, template, RadioSelectFacetView, ListFacetView){
 		initialize: function(){
 			this.renderFacetCollection();
 			this.model.on('reset', this.addAll, this);
+			this.model.on('change:restrictions', this.updateFacets, this);
 		},
 
 		renderFacetCollection: function(){
@@ -47,6 +48,31 @@ function($, Backbone, _, template, RadioSelectFacetView, ListFacetView){
 				});
 			}
 		},
+
+		// @TODO: perhaps temporarily unbind the change listener, then rebind?
+		updateFacets: function(event_source){
+			this.model.each(function(m){
+
+				// Get combined restrictions.
+				combined_restrictions = this.model.getRestrictions();
+
+				// Update facets except for facet which triggered the change.
+				if (m.id != event_source.id){
+
+					// Set facet parameters to be combined facet restrictions
+					// sans the restrictions for the facet itself.
+					parameters = {};
+					_.each(combined_restrictions, function(v, k){
+						if (k != m.id){
+							parameters[k] = v;
+						}
+					});
+					m.set({parameters: parameters}, {silent: true});
+					m.fetch();
+				}
+			} ,this);
+
+		}
 		
 	});
 
