@@ -54,13 +54,20 @@ function($, Backbone, _, ui, FacetView, template, choices_template){
 			return this;
 		},
 
-		renderChoices: function(){
+		// Default choice formatter.
+		formatChoices: function(choices){
+			return choices;
+		},
 
-			// Get choices from model.
+		renderChoices: function(){
+			// Get choices from the model.
 			choices = this.model.get('choices');
 
-			// Update choices.
-			choices_html = _.template(choices_template, {choices: choices});
+			// Format the choices.
+			formatted_choices = this.formatChoices(choices);
+
+			// Update choice elements.
+			choices_html = _.template(choices_template, {choices: formatted_choices});
 			$('.facet-choices', $(this.el)).html(choices_html);
 
 			// Re-select choices which are still present.

@@ -11,43 +11,21 @@ function($, Backbone, _, template, RadioSelectFacetView, ListFacetView){
 	var FacetCollectionView = Backbone.View.extend({
 
 		initialize: function(){
-			this.renderFacetCollection();
-			this.model.on('reset', this.addAll, this);
+			//console.log('FacetCollectionView:initialize');
+			this.renderFacetContainer();
 			this.model.on('change:restrictions', this.updateFacets, this);
 		},
 
-		renderFacetCollection: function(){
+		renderFacetContainer: function(){
 			form_html = _.template(template, {model: this.model.toJSON()});
 			$(this.el).html(form_html);
 			return this;
 		},
 
-		addOne: function(facet) {
-		  var view = this.getViewForFacet(facet);
-		  widget_el = view.render().el;
-		  $(".facet-widgets", $(this.el)).append(widget_el);
+		addFacetView: function(facet_view) {
+			$(".facet-widgets", $(this.el)).append(facet_view.el);
+			facet_view.render();
 		},	
-
-		addAll: function() {
-		  this.model.each(this.addOne, this);
-		},
-
-		getViewForFacet: function(facet){
-
-			// Select facets.	
-			if (facet.get('type') == 'select'){
-				return new RadioSelectFacetView({
-					model: facet
-				});
-			}
-
-			// Multiselect facets.	
-			if (facet.get('type') == 'multiselect'){
-				return new ListFacetView({
-					model: facet
-				});
-			}
-		},
 
 		// @TODO: perhaps temporarily unbind the change listener, then rebind?
 		updateFacets: function(event_source){
