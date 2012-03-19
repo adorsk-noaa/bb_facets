@@ -76,6 +76,7 @@ function($, Backbone, _, ui, FacetView, template, choices_template){
 				choice_id = $('input[type=checkbox]', $(facet_choice_el)).data('choice_id');
 				if (_this.selected_choices[choice_id]){
 					$(facet_choice_el).toggleClass('facet-choice-selected');
+					$('input[type=checkbox]', $(facet_choice_el)).attr('checked', true);
 				}
 			});
 
@@ -113,7 +114,7 @@ function($, Backbone, _, ui, FacetView, template, choices_template){
 		updateRestrictions: function(){
 			selected_values = _.keys(this.getWidgetValues());
 			restrictions = [];
-			if (selected_values){
+			if (selected_values.length > 0){
 				restrictions = [{field: this.model.id, op: 'in', value: selected_values}];
 			}
 			this.model.set({restrictions: restrictions});
