@@ -180,14 +180,25 @@
   color: #ff6a00;
   }
 
-.facet-choice-count, .facet-range-choice-count {
+.facet-choice-count-label, .facet-range-choice-count {
   padding-left: 5px;
   font-size: 0.85em;
   color: @light_grey;
   }
 
-.facet-choice-count-scalebar{
-  background-color: @chrome_primary
+.facet-choice-count-image{
+
+	float: right;
+	width: 50px;
+
+	.scalebar-container{
+		border: thin solid @faint_grey;
+		display: block;
+	}
+
+	.scalebar-fill{
+		background-color: @chrome_primary
+	}
 }
 
 .facet-choice-toggle {

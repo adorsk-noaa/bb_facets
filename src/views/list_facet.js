@@ -4,11 +4,12 @@ define([
 	"use!backbone",
 	"use!underscore",
 	"use!ui",
+	"_s",
 	"./facet",
 	"text!./templates/list_facet.html",
 	"text!./templates/list_facet_choices.html",
 		],
-function($, Backbone, _, ui, FacetView, template, choices_template){
+function($, Backbone, _, ui, _s, FacetView, template, choices_template){
 
 	var ListFacetView = FacetView.extend({
 
@@ -56,7 +57,56 @@ function($, Backbone, _, ui, FacetView, template, choices_template){
 
 		// Default choice formatter.
 		formatChoices: function(choices){
-			return choices;
+			if (choices.length == 0){
+				return choices;
+			}
+
+			var formatted_choices = [];
+
+			// Get count labels.
+			var choice_count_labels = this.formatChoiceCountLabels(choices);
+
+			// Get count images.
+			var choice_count_images =this.formatChoiceCountImages(choices);
+
+			// Format each choice...
+			_.each(choices, function(choice, i){
+
+				// Keep original id and label.
+				formatted_choice = {
+					id: choice['id'],
+					label: choice['label'],
+				};
+
+				// Add count label and image.
+				formatted_choice['count_label'] = choice_count_labels[i];
+				formatted_choice['count_image'] = choice_count_images[i];
+				
+				formatted_choices.push(formatted_choice);
+			});
+
+			return formatted_choices;
+		},
+
+		formatChoiceCountLabels: function(choices){
+			var choice_count_labels = [];
+			_.each(choices, function(choice){
+				choice_count_labels.push(choice['count']);	
+			});
+
+			return choice_count_labels;
+		},
+
+		formatChoiceCountImages: function(choices){
+			var choice_count_images= [];
+
+			var total = _.reduce(choices, function(total, choice){return total + parseFloat(choice['count'])},0);
+
+			_.each(choices, function(choice){
+				var scale = choice['count']/total;
+				choice_count_images.push(_s.sprintf("<span class='scalebar-container'><span class='scalebar-fill' style='display: block; width:%s%%;'>&nbsp;</span></span>", Math.round(scale * 100)));
+			});
+			return choice_count_images;
 		},
 
 		renderChoices: function(){
