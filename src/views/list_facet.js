@@ -111,7 +111,11 @@ function($, Backbone, _, ui, FacetView, template, choices_template){
 		},
 
 		updateRestrictions: function(){
-			restrictions = _.values(this.getWidgetValues());
+			selected_values = _.keys(this.getWidgetValues());
+			restrictions = [];
+			if (selected_values){
+				restrictions = [{field: this.model.id, op: 'in', value: selected_values}];
+			}
 			this.model.set({restrictions: restrictions});
 		},
 
