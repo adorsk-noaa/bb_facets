@@ -140,7 +140,8 @@ function($, Backbone, _, ui, FacetView, template, choices_template){
 				facet_choice_el = $('#facet-choice--' + choice_id);
 				facet_choice_el.removeClass('facet-choice-selected');
 			});
-			this.update();
+			this.selected_choices = {};
+			this.updateRestrictions();
 		}
 
 	});
