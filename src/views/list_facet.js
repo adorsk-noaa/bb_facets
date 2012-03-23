@@ -100,7 +100,7 @@ function($, Backbone, _, ui, _s, FacetView, template, choices_template){
 		formatChoiceCountImages: function(choices){
 			var choice_count_images= [];
 
-			var total = _.reduce(choices, function(total, choice){return total + parseFloat(choice['count'])},0);
+			var total = this.model.get('value_total');
 
 			_.each(choices, function(choice){
 				var scale = choice['count']/total;
