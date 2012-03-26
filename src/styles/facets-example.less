@@ -209,38 +209,58 @@
   font-weight: normal;
   }
 
-.facet-range-body {
-  padding: 5px;
-  }
 
-.facet-range-message {
-  color: @metadata_grey;
-  }
+.facet-range-facet .facet-body{
+	padding: 10px 14px;
 
-.facet-range-histogram {
-  overflow: hidden;
-  }
+	.range-widget{
+		position: relative;
+		width: 100%;
+		height: 200px;
 
-.facet-range-status {
-  margin: 0 0 3px 0;
-  color: #000;
-  text-align: center;
-  }
+		.slider-widget, .histogram{
+			height: 100%;
+			width: 100%;
+			position: absolute;
+		}
 
-.facet-range-choices {
-  padding: 5px 0 30px 0;
-  }
+		.slider-widget {
 
-.facet-range-item {
-  float: left;
-  text-align: left;
-  padding: 0 4px;
-  }
+			z-index: 1;
 
-.facet-range-choice-label {
-  font-size: 0.85em;
-  }
+			.slider {
+				background-color: gray;
+				background-image: none;
+				opacity: .75;
+				height: 100%;
 
-.facet-range-choice-count {
-  margin: -2px 0 0 16px;
-  }
+				.ui-slider-handle {
+					top: 40% !important;
+					border: thin solid black !important;
+				}
+			}
+
+		}
+
+		.histogram{
+			z-index: 0;
+
+			.bar-body {
+				width: 90%;
+				height: 100%;
+				background-color: @near_black;
+			}
+		}
+
+	}
+
+	.range-controls {
+		padding-top: 1em;
+		text-align: center;
+	}
+
+}
+
+.facet-numeric-facet {
+}
+

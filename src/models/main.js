@@ -7,7 +7,7 @@ function(_, FacetModel, FacetCollection){
 
 	models = {
 		'FacetModel': FacetModel,
-		'FacetCollection': FacetCollection
+		'FacetCollection': FacetCollection,
 	};
 
 	return models;

@@ -42,18 +42,9 @@ function($, Backbone, _, ui, _s, FacetView, template, choices_template){
 			widget_html = _.template(template, {model: this.model.toJSON()});
 			$(this.el).html(widget_html);
 
-			// Make the main container resizeable.
-			r = $(".facet-body", $(this.el)).resizable({
-				minHeight: 30,
-				handles: 's',
-				stop: function(event, ui) {
-					event.target.style.width = "auto"; // don't force the width
-				}
-			});
-
-
-			return this;
+			FacetView.prototype.makeResizeable.call(this);
 		},
+
 
 		// Default choice formatter.
 		formatChoices: function(choices){

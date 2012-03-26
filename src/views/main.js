@@ -2,14 +2,18 @@ define([
 	"use!underscore",
 	"./radio_select_facet",
 	"./list_facet",
-	"./facet_collection"
+	"./numeric_facet",
+	"./facet_collection",
+	"./range_slider"
 ], 
-function(_, RadioSelectFacetView, ListFacetView, FacetCollectionView){
+function(_, RadioSelectFacetView, ListFacetView, NumericFacetView, FacetCollectionView, RangeSliderView){
 
 	views = {
 		RadioSelectFacetView: RadioSelectFacetView,
 		ListFacetView: ListFacetView,
-		FacetCollectionView: FacetCollectionView
+		NumericFacetView: NumericFacetView,
+		FacetCollectionView: FacetCollectionView,
+		RangeSliderView: RangeSliderView,
 	};
 
 	return views;
