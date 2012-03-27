@@ -39,6 +39,8 @@ function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView
 				selection_min: filtered_histogram_stats['x_min'],
 				selection_max: filtered_histogram_stats['x_max'],
 			});
+
+			$('.facet-controls .range', this.el).html(_s.sprintf("%.1f to %.1f", base_histogram_stats['x_min'], base_histogram_stats['x_max']));
 		},
 
 		getHistogramStats: function(histogram){
@@ -137,7 +139,7 @@ function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView
 					this.onRangeSelectionChange();
 				},
 				render: function(){
-					$(this.el).html('<input name="selection_min" type="text"> &le; ' + this.options.label + ' &le; <input name="selection_max" type="text">');
+					$(this.el).html('<input name="selection_min" type="text"><span class="label">&le; ' + this.options.label + ' &le; </span><input name="selection_max" type="text">');
 				},
 				onInputChange: function(){
 					var min_el = $('input[name="selection_min"]', this.el);
