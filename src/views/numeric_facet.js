@@ -94,7 +94,7 @@ function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView
 
 			histogram = options['histogram'];
 
-			histogram_stats = this.getHistogramStats(histogram);
+			histogram_stats = this.getHistogramStats(this.model.get('base_histogram'));
 
 			x_min = histogram_stats['x_min'];
 			x_max = histogram_stats['x_max'];

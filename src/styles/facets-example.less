@@ -2,6 +2,7 @@
 @link_secondary: #4272db;
 @chrome_primary: #bcf;
 @chrome_secondary: #e3e9ff;
+@chrome_dark: #828eb2;
 @fill_primary: #ebeef8;
 @fill_secondary: #f2f2f2;
 @fill_editable: #ffffd6;
@@ -230,10 +231,15 @@
 
 			.slider {
 				z-index: -5;
-				background-color: gray;
+				background-color: @light_grey;
 				background-image: none;
-				opacity: .75;
+				opacity: .25;
 				height: 100%;
+
+				.ui-slider-range{
+					background-color: white;
+					background-image: none;
+				}
 
 				.ui-slider-handle {
 					top: 40% !important;
@@ -247,21 +253,21 @@
 			.bar-body {
 				width: 90%;
 				height: 100%;
+				border: thin solid @light_grey;
+				background-color: @chrome_dark;
 			}
 		}
 
 		.filtered-histogram{
 			z-index: 1;
-			.bar-body{
-				background-color: #3333aa;
-			}
 		}
 		.base-histogram{
 			z-index: 0;
-			.bar-body{
-				background-color: #3333cc;
-			}
 			opacity: .25;
+			.bar-body {
+				background-color: transparent;
+				border: thin solid black;
+			}
 		}
 
 	}
