@@ -226,9 +226,10 @@
 
 		.slider-widget {
 
-			z-index: 1;
+			z-index: 2;
 
 			.slider {
+				z-index: -5;
 				background-color: gray;
 				background-image: none;
 				opacity: .75;
@@ -243,13 +244,24 @@
 		}
 
 		.histogram{
-			z-index: 0;
-
 			.bar-body {
 				width: 90%;
 				height: 100%;
-				background-color: @near_black;
 			}
+		}
+
+		.filtered-histogram{
+			z-index: 1;
+			.bar-body{
+				background-color: #3333aa;
+			}
+		}
+		.base-histogram{
+			z-index: 0;
+			.bar-body{
+				background-color: #3333cc;
+			}
+			opacity: .25;
 		}
 
 	}

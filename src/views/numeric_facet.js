@@ -22,47 +22,79 @@ function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView
 		initialize: function(){
 			FacetView.prototype.initialize.call(this, arguments);
 
-			var histogram_stats = this.getHistogramStats();
-			this.range_selection = new RangeSelectionModel({
-				range_min: histogram_stats['x_min'],
-				range_max: histogram_stats['x_max'],
-				selection_min: histogram_stats['x_min'],
-				selection_max: histogram_stats['x_max'],
-			});
-			this.range_selection.on('change', this.onRangeChange, this);
+			this.range_selection = new RangeSelectionModel();
+			this.updateRange();
+
+			this.range_selection.on('change', this.onSelectionChange, this);
+			this.model.on('change:base_histogram', this.renderBaseHistogram, this);
+			this.model.on('change:filtered_histogram', this.renderFilteredHistogram, this);
 		},
 
-		getHistogramStats: function(){
-			histogram = this.model.get('histogram');
-			return{
-				x_min : _.min(histogram, function(bucket){return bucket['min']})['min'],
-				x_max : _.max(histogram, function(bucket){return bucket['max']})['max'],
-				y_min : _.min(histogram, function(bucket){return bucket['count']})['count'],
-				y_max : _.max(histogram, function(bucket){return bucket['count']})['count']
-			};
+		updateRange: function(){
+			var base_histogram_stats = this.getHistogramStats(this.model.get('base_histogram'));
+			var filtered_histogram_stats = this.getHistogramStats(this.model.get('filtered_histogram'));
+			this.range_selection.set({
+				range_min: base_histogram_stats['x_min'],
+				range_max: base_histogram_stats['x_max'],
+				selection_min: filtered_histogram_stats['x_min'],
+				selection_max: filtered_histogram_stats['x_max'],
+			});
+		},
+
+		getHistogramStats: function(histogram){
+			var stats = {
+				x_min: 0,
+				x_max: 0,
+				y_min: 0,
+				y_max: 0
+			}
+			if (histogram.length > 0){
+				stats['x_min'] = _.min(histogram, function(bucket){return bucket['min']})['min'];
+				stats['x_max'] = _.max(histogram, function(bucket){return bucket['max']})['max'];
+				stats['y_min'] = _.min(histogram, function(bucket){return bucket['count']})['count'];
+				stats['y_max'] = _.max(histogram, function(bucket){return bucket['count']})['count'];
+			}
+
+			return stats;
 		},
 
 		render: function(){
 			this.renderWidget();
 			this.renderSlider();
 			this.renderTextInputs();
-			this.renderHistogram();
+			return this;
+		},
+
+		renderBaseHistogram: function(){
+			this.updateRange();
+			this.renderHistogram({
+				el: '.base-histogram',
+				histogram: this.model.get('base_histogram')
+			});
+			return this;
+		},
+
+		renderFilteredHistogram: function(){
+			this.renderHistogram({
+				el: '.filtered-histogram',
+				histogram: this.model.get('filtered_histogram')
+			});
 			return this;
 		},
 		
 		renderWidget: function(){
 			widget_html = _.template(template, {model: this.model.toJSON()});
 			$(this.el).html(widget_html);
-
 			return this;
 		},
 
-		renderHistogram: function(){
-			histogram_el = $('.histogram', this.el);
+		renderHistogram: function(options){
+			histogram_el = $(options['el'], this.el);
 			histogram_el.empty();
 
-			histogram = this.model.get('histogram');
-			histogram_stats = this.getHistogramStats();
+			histogram = options['histogram'];
+
+			histogram_stats = this.getHistogramStats(histogram);
 
 			x_min = histogram_stats['x_min'];
 			x_max = histogram_stats['x_max'];
@@ -73,9 +105,15 @@ function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView
 			y_range = y_max - y_min;
 
 			_.each(histogram, function(bucket){
-				bucket_x = (bucket['min'] - x_min)/x_range * 100.0;
-				bucket_width = (bucket['max'] - bucket['min'])/x_range * 100.0;
-				bucket_y = (bucket['count'] - y_min)/y_range * 100.0;
+				bucket_x = Math.round((bucket['min'] - x_min)/x_range * 100.0);
+				bucket_width = Math.round((bucket['max'] - bucket['min'])/x_range * 100.0);
+				bucket_y = Math.round((bucket['count'] - y_min)/y_range * 100.0);
+
+				// Show stub for small fractional values.
+				if (bucket_y < 1 && bucket_y > 0){
+					bucket_y = 1;
+				}
+
 				bucket_el = $(_s.sprintf("<div class='bar' style='position: absolute; left: %d%%; bottom: 0; width:%d%%; height: %d%%;'><div class='bar-body'></div></div>", bucket_x, bucket_width, bucket_y));
 				histogram_el.append(bucket_el);
 			}, this);
@@ -143,8 +181,8 @@ function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView
 					});
 				},
 				onRangeSelectionChange: function(){
-					$('input[name="selection_min"]').attr('value', this.model.get('selection_min'));
-					$('input[name="selection_max"]').attr('value', this.model.get('selection_max'));
+					$('input[name="selection_min"]').attr('value', _s.sprintf("%.1f", this.model.get('selection_min')));
+					$('input[name="selection_max"]').attr('value', _s.sprintf("%.1f", this.model.get('selection_max')));
 				}
 			});
 
@@ -155,8 +193,16 @@ function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView
 			});
 		},
 
-		onRangeChange: function(){
-			console.log('on range change');
+		onSelectionChange: function(){
+			// Show reset button if the full range is not selected.
+			if ((this.range_selection.get('selection_min') != this.range_selection.get('range_min')) ||
+				(this.range_selection.get('selection_max') != this.range_selection.get('range_max'))){
+				$('.facet-reset-button', $(this.el)).css('visibility', 'visible');
+			}
+			else{
+				$('.facet-reset-button', $(this.el)).css('visibility', 'hidden');
+			}
+			this.updateRestrictions();		
 		},
 
 		getWidgetValues: function(){
@@ -167,11 +213,19 @@ function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView
 		},
 
 		updateRestrictions: function(){
-			console.log('numeric:updateRestrictions');
+			var selection = this.getWidgetValues();
+			restrictions = [
+				{field: this.model.id, op: '>=', value: selection['selection_min']},
+				{field: this.model.id, op: '<=', value: selection['selection_max']}
+			];
+			this.model.set({restrictions: restrictions});
 		},
 
 		resetRestrictions: function(){
-			console.log('numeric:resetRestrictions');
+			this.range_selection.set({
+				selection_min: this.range_selection.get('range_min'),
+				selection_max: this.range_selection.get('range_max')
+			});
 		}
 
 	});

@@ -11,7 +11,6 @@ function($, Backbone, _, template, RadioSelectFacetView, ListFacetView){
 	var FacetCollectionView = Backbone.View.extend({
 
 		initialize: function(){
-			//console.log('FacetCollectionView:initialize');
 			this.renderFacetContainer();
 			this.model.on('change:restrictions', this.updateFacets, this);
 		},
@@ -27,7 +26,6 @@ function($, Backbone, _, template, RadioSelectFacetView, ListFacetView){
 			facet_view.render();
 		},	
 
-		// @TODO: perhaps temporarily unbind the change listener, then rebind?
 		updateFacets: function(event_source){
 			this.model.each(function(m){
 
