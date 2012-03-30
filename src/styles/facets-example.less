@@ -7,6 +7,7 @@
 @fill_secondary: #f2f2f2;
 @fill_editable: #ffffd6;
 @selected_primary: #68e;
+@selected_highlight: #FF6A00;
 @green_primary: #282;
 @green_secondary: #3d3;
 @notification_primary: #fe8;
@@ -178,7 +179,7 @@
 
 .facet-choice-selected .facet-choice-label {
   font-weight: bold;
-  color: #ff6a00;
+  color: @selected_highlight;
   }
 
 .facet-choice-count-label, .facet-range-choice-count {
@@ -218,6 +219,7 @@
 		position: relative;
 		width: 100%;
 		height: 10em;
+		background-color: white;
 
 		.slider-widget, .histogram{
 			height: 100%;
@@ -231,14 +233,20 @@
 
 			.slider {
 				z-index: -5;
-				background-color: @light_grey;
+				background-color: transparent;
 				background-image: none;
-				opacity: .25;
 				height: 100%;
 
 				.ui-slider-range{
-					background-color: white;
 					background-image: none;
+					background-color: transparent;
+				}
+
+				.ui-slider-range-left, .ui-slider-range-right{
+					position: absolute;
+					height: 100%;
+					opacity: .25;
+					background-color: #666666;
 				}
 
 				.ui-slider-handle {
@@ -254,12 +262,14 @@
 				width: 90%;
 				height: 100%;
 				border: thin solid @light_grey;
-				background-color: @chrome_dark;
 			}
 		}
 
 		.filtered-histogram{
 			z-index: 1;
+			.bar-body {
+				background-color: @chrome_secondary;
+			}
 		}
 		.base-histogram{
 			z-index: 0;
