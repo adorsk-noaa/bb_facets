@@ -2,11 +2,12 @@ define([
 	"jquery",
 	"use!backbone",
 	"use!underscore",
+	"use!ui",
 	"text!./templates/facet_collection.html",
 	"./radio_select_facet",
 	"./list_facet"
 		],
-function($, Backbone, _, template, RadioSelectFacetView, ListFacetView){
+function($, Backbone, _, ui, template, RadioSelectFacetView, ListFacetView){
 
 	var FacetCollectionView = Backbone.View.extend({
 
@@ -18,12 +19,15 @@ function($, Backbone, _, template, RadioSelectFacetView, ListFacetView){
 		renderFacetContainer: function(){
 			form_html = _.template(template, {model: this.model.toJSON()});
 			$(this.el).html(form_html);
+			$('.facet-widgets', this.el).sortable();
+
 			return this;
 		},
 
 		addFacetView: function(facet_view) {
 			$(".facet-widgets", $(this.el)).append(facet_view.el);
 			facet_view.render();
+			$('.facet-widgets', this.el).sortable('refresh');
 		},	
 
 		updateFacets: function(event_source){
