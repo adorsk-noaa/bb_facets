@@ -19,8 +19,7 @@ function($, Backbone, _, ui, template, RadioSelectFacetView, ListFacetView){
 		renderFacetContainer: function(){
 			form_html = _.template(template, {model: this.model.toJSON()});
 			$(this.el).html(form_html);
-			$('.facet-widgets', this.el).sortable();
-
+			$('.facet-widgets', this.el).sortable({handle: '.facet-title'});
 			return this;
 		},
 
