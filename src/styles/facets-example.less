@@ -1,3 +1,5 @@
+@import "rounded-corners.less";
+
 @link_primary: #11c;
 @link_secondary: #4272db;
 @chrome_primary: #bcf;
@@ -25,67 +27,6 @@
 @padding_normal: 7px;
 @padding_loose: 10px;
 @padding_looser: 15px;
-
-.rounded_corners (@radius: 5px) {
-  -moz-border-radius: @radius;
-  -webkit-border-radius: @radius;
-  border-radius: @radius;
-  }
-
-.rounded_corners_top (@radius: 5px) {
-  -webkit-border-top-left-radius: @radius;
-  -webkit-border-top-right-radius: @radius;
-  -moz-border-radius-topleft: @radius;
-  -moz-border-radius-topright: @radius;
-  border-top-right-radius: @radius;
-  border-top-left-radius: @radius;
-  }
-
-.rounded_corners_bottom (@radius: 5px) {
-  -webkit-border-bottom-left-radius: @radius;
-  -webkit-border-bottom-right-radius: @radius;
-  -moz-border-radius-bottomleft: @radius;
-  -moz-border-radius-bottomright: @radius;
-  border-bottom-right-radius: @radius;
-  border-bottom-left-radius: @radius;
-  }
-
-.rounded_corners_left (@radius: 5px) {
-  -webkit-border-top-left-radius: @radius;
-  -webkit-border-bottom-left-radius: @radius;
-  -moz-border-radius-topleft: @radius;
-  -moz-border-radius-bottomleft: @radius;
-  border-top-left-radius: @radius;
-  border-bottom-left-radius: @radius;
-  }
-
-.rounded_corners_right (@radius: 5px) {
-  -webkit-border-top-right-radius: @radius;
-  -webkit-border-bottom-right-radius: @radius;
-  -moz-border-radius-topright: @radius;
-  -moz-border-radius-bottomright: @radius;
-  border-top-right-radius: @radius;
-  border-bottom-right-radius: @radius;
-  }
-
-.sharp_corners_left () {
-  -webkit-border-top-right-radius: 0;
-  -webkit-border-bottom-right-radius: 0;
-  -moz-border-radius-topright: 0;
-  -moz-border-radius-bottomright: 0;
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0; 
-  }
-
-.sharp_corners_right () {
-  -moz-border-radius-topleft: 0;
-  -moz-border-radius-bottomleft: 0;
-  -webkit-border-top-left-radius: 0;
-  -webkit-border-bottom-left-radius: 0;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  }
-
 
 .facet-widgets {
 	padding-top: 5px;
@@ -137,16 +78,19 @@
   color: #4272db;
   font-weight: normal;
 } 
-  
+
 .facet-body-scrollable {
-  height: 10em;
-  padding-bottom: 8px;
-  background: url(images/facet-resize-handle.png) center bottom no-repeat;
-  }
+	height: 14em;
+	padding-bottom: 8px;
+	background: url(images/facet-resize-handle.png) center bottom no-repeat;
+	font-size: 14px;
+}
 
 .facet-body-inner {
-  background: #fff;
-  }
+	height: 100%;
+	background: #fff;
+	overflow-y: scroll;
+}
   
 .facet-body-scrollable .facet-body-inner {
   border-bottom: 1px solid @chrome_primary;
@@ -156,65 +100,79 @@
   bottom: -5px;
   height: 15px;
   }
-  
-.facet-body-scrollable .facet-body-inner {
-  height: 100%;
-  overflow: auto;
-  }
 
 .facet-body-controls {
   font-size: 0.85em;
   margin: 5px 0;
   }
 
-.facet-choice {
-  padding: 2px 5px;
-  clear: both;
+.facet-choices{
 
-  label {
-	cursor: pointer;
-	display: block;
-	color: blue;
-  }
-}
+	display: table;
+	width: 100%;
+	border-spacing: 0px .7em;
 
-.facet-choice:hover {
-  background: @fill_secondary;
-  }
+	.facet-choice {
+		display: table-row;
+		clear: both;
 
-.facet-choice-selected .facet-choice-label {
-  font-weight: bold;
-  color: @selected_highlight;
-  }
+		cursor: pointer;
+		color: blue;
 
-.facet-choice-count-label, .facet-range-choice-count {
-  padding-left: 5px;
-  font-size: 0.85em;
-  color: @light_grey;
-  }
+		&:hover{
+			background: @fill_secondary;
+		}
 
-.facet-choice-count-image{
+		.cell{
+			display: table-cell;
+			padding: 0px 1em;
+		}
 
-	float: right;
-	width: 50px;
 
-	.scalebar-container{
-		border: thin solid @faint_grey;
-		display: block;
+		.text{
+			.title{
+			}
+			.count{
+				padding-left: 5px;
+				font-size: 0.85em;
+				color: @light_grey;
+			}
+		}
+
+		.icon{
+			display: table-cell;
+			width: 50px;
+			.count-image{
+				width: 100%;
+				.scalebar-container{
+					border: thin solid @faint_grey;
+					display: block;
+				}
+				.scalebar-fill{
+					background-color: @chrome_primary
+				}
+			}
+		}
+		.controls{
+			display: table-cell;
+			width: 10px;
+			.toggle{
+				padding-left: 5px;
+				font-size: 0.85em;
+				font-weight: normal;
+			}
+		}
 	}
 
-	.scalebar-fill{
-		background-color: @chrome_primary
+	.facet-choice-selected{
+		.text{
+			.title{
+				font-weight: bold;
+				color: @selected_highlight;
+			}
+		}
 	}
 }
-
-.facet-choice-toggle {
-  float: right;
-  padding-left: 5px;
-  font-size: 0.85em;
-  color: @link_secondary;
-  font-weight: normal;
-  }
 
 
 .facet-range-facet .facet-body{
@@ -296,8 +254,5 @@
 		}
 	}
 
-}
-
-.facet-numeric-facet {
 }
 
