@@ -1,10 +1,14 @@
 <% _.each(choices, function(choice,index) { %>
-<div class="facet-choice" id="facet-choice--<%= choice.id %>">
-	<label for="input--<%= choice.id %>">
-		<input class="facet-choice-toggle" type="checkbox" id="input--<%= choice.id %>" data-choice_id="<%= choice.id %>" value="<%= choice.value %>">
-		<span class="facet-choice-label"><%= choice.label %></span>
-		<span class="facet-choice-count-label"><%= choice.count_label %></span>
-		<span class="facet-choice-count-image"><%= choice.count_image %></span>
+	<label class="facet-choice" id="facet-choice--<%= choice.id %>" for="input--<%= choice.id %>">
+		<div class="text cell">
+			<div class="title"><%= choice.label %></div>
+			<div class="count"><%= choice.count_label %></div>
+		</div>
+		<div class="icon cell">
+			<div class="count-image"><%= choice.count_image %></div>
+		</div>
+		<div class="controls cell">
+			<input class="toggle" type="checkbox" id="input--<%= choice.id %>" data-choice_id="<%= choice.id %>" value="<%= choice.value %>">
+		</div>
 	</label>
-</div> 
 <% }); %>
