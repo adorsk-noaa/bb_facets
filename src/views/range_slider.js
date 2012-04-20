@@ -41,7 +41,7 @@ function($, Backbone, _, ui, _s, template){
 
 			// Have divs track the slider.
 			var _this = this;
-			this.slider_el.on('slide', function(){
+			this.slider_el.on('slide slidechange', function(){
 				_this.updateRangeLeftRight();
 			});
 			
