@@ -217,8 +217,8 @@ function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView
 		updateRestrictions: function(){
 			var selection = this.getWidgetValues();
 			restrictions = [
-				{field: this.model.id, op: '>=', value: selection['selection_min']},
-				{field: this.model.id, op: '<=', value: selection['selection_max']}
+				{field: this.model.get('grouping_field').id, transform: this.model.get('grouping_field').transform, op: '>=', value: selection['selection_min']},
+				{field: this.model.get('grouping_field').id, transform: this.model.get('grouping_field').transform, op: '<=', value: selection['selection_max']}
 			];
 			this.model.set({restrictions: restrictions});
 		},
