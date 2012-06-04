@@ -16,7 +16,7 @@ function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView
 		events: {
 
 			// Reset button.
-			"click .facet-reset-button": "resetRestrictions",
+			"click .facet-reset-button": "resetFilters",
 		},
 
 		initialize: function(){
@@ -204,7 +204,7 @@ function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView
 			else{
 				$('.facet-reset-button', $(this.el)).css('visibility', 'hidden');
 			}
-			this.updateRestrictions();		
+			this.updateFilters();		
 		},
 
 		getWidgetValues: function(){
@@ -214,16 +214,16 @@ function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView
 			};
 		},
 
-		updateRestrictions: function(){
+		updateFilters: function(){
 			var selection = this.getWidgetValues();
-			restrictions = [
+			filters = [
 				{field: this.model.get('grouping_field').id, transform: this.model.get('grouping_field').transform, op: '>=', value: selection['selection_min']},
 				{field: this.model.get('grouping_field').id, transform: this.model.get('grouping_field').transform, op: '<=', value: selection['selection_max']}
 			];
-			this.model.set({restrictions: restrictions});
+			this.model.set({filters: filters});
 		},
 
-		resetRestrictions: function(){
+		resetFilters: function(){
 			this.range_selection.set({
 				selection_min: this.range_selection.get('range_min'),
 				selection_max: this.range_selection.get('range_max')

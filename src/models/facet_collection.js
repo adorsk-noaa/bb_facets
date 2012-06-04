@@ -14,12 +14,12 @@ var FacetCollection = Backbone.Collection.extend({
 		}
 	},
 
-	getRestrictions: function(){
-		restrictions = {};
+	getFilters: function(){
+		var filters = {};
 		this.each(function(facet_model){
-			restrictions[facet_model.id] = facet_model.get('restrictions');
+			filters[facet_model.id] = facet_model.get('filters');
 		});
-		return restrictions;
+		return filters;
 	},
 
 });

@@ -13,7 +13,7 @@ function($, Backbone, _, ui, template, RadioSelectFacetView, ListFacetView){
 
 		initialize: function(){
 			this.renderFacetContainer();
-			this.model.on('change:restrictions', this.updateFacets, this);
+			this.model.on('change:filters', this.updateFacets, this);
 		},
 
 		renderFacetContainer: function(){
@@ -32,21 +32,19 @@ function($, Backbone, _, ui, template, RadioSelectFacetView, ListFacetView){
 		updateFacets: function(event_source){
 			this.model.each(function(m){
 
-				// Get combined restrictions.
-				combined_restrictions = this.model.getRestrictions();
+				var combined_filters = this.model.getFilters();
 
 				// Update facets except for facet which triggered the change.
 				if (m.id != event_source.id){
 
-					// Set facet parameters to be combined facet restrictions
-					// sans the restrictions for the facet itself.
-					parameters = {};
-					_.each(combined_restrictions, function(v, k){
+					// Facets should not use their own filters.
+					var filters = {};
+					_.each(combined_filters, function(v, k){
 						if (k != m.id){
 							parameters[k] = v;
 						}
 					});
-					m.set({parameters: parameters}, {silent: true});
+					m.set({filters: filters}, {silent: true});
 					m.getData();
 				}
 			} ,this);

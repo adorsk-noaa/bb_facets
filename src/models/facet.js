@@ -8,8 +8,7 @@ var FacetModel = Backbone.Model.extend({
 	defaults: {
 		label: '',
 		type: '',
-		restrictions: {},
-		parameters: {},
+		filters: {},
 	},
 
 	initialize: function(){

@@ -12,7 +12,7 @@ function($, Backbone, _, FacetView, template){
 
 		events: {
 			// Update model when widget changes.
-			"change .radio-select-facet-widget": 'updateRestrictions'
+			"change .radio-select-facet-widget": 'updateFilters'
 		},
 
 		initialize: function(){
@@ -33,9 +33,9 @@ function($, Backbone, _, FacetView, template){
 			 return widget_values;
 		},
 
-		updateRestrictions: function(){
-			restrictions = this.getWidgetValues();
-			this.model.set({restrictions: restrictions});
+		updateFilters: function(){
+			filters = this.getWidgetValues();
+			this.model.set({filters: filters});
 		}
 
 	});

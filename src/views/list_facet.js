@@ -19,7 +19,7 @@ function($, Backbone, _, ui, _s, FacetView, template, choices_template){
 			"change .facet-choice": "onChoiceChange",
 
 			// Reset choices when the rest button is clicked.
-			"click .facet-reset-button": "resetRestrictions"
+			"click .facet-reset-button": "resetFilters"
 		},
 
 		initialize: function(){
@@ -148,17 +148,17 @@ function($, Backbone, _, ui, _s, FacetView, template, choices_template){
 			choice_id = $('input[type=checkbox]', $(facet_choice_el)).data('choice_id');
 			this.selected_choices[choice_id] = ! this.selected_choices[choice_id];
 
-			this.updateRestrictions();
+			this.updateFilters();
 			this.updateResetButton();
 		},
 
-		updateRestrictions: function(){
+		updateFilters: function(){
 			selected_values = _.keys(this.getWidgetValues());
-			restrictions = [];
+			filters = [];
 			if (selected_values.length > 0){
-				restrictions = [{field: this.model.id, op: 'in', value: selected_values}];
+				filters = [{field: this.model.id, op: 'in', value: selected_values}];
 			}
-			this.model.set({restrictions: restrictions});
+			this.model.set({filters: filters});
 		},
 
 		updateResetButton: function(){
@@ -172,7 +172,7 @@ function($, Backbone, _, ui, _s, FacetView, template, choices_template){
 			}
 		},
 
-		resetRestrictions: function(){
+		resetFilters: function(){
 
 			// Uncheck all selected, and remove selected class.
 			$('.facet-choice input[type=checkbox]:checked', $(this.el)).each(function(i,e){
@@ -182,7 +182,7 @@ function($, Backbone, _, ui, _s, FacetView, template, choices_template){
 				facet_choice_el.removeClass('facet-choice-selected');
 			});
 			this.selected_choices = {};
-			this.updateRestrictions();
+			this.updateFilters();
 		}
 
 	});
