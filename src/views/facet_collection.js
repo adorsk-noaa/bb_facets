@@ -13,7 +13,7 @@ function($, Backbone, _, ui, template, RadioSelectFacetView, ListFacetView){
 
 		initialize: function(){
 			this.renderFacetContainer();
-			this.model.on('change:selection', this.updateFacets, this);
+			this.model.on('change:selection', this.onSelectionChange, this);
 		},
 
 		renderFacetContainer: function(){
@@ -29,13 +29,18 @@ function($, Backbone, _, ui, template, RadioSelectFacetView, ListFacetView){
 			$('.facet-widgets', this.el).sortable('refresh');
 		},	
 
-		updateFacets: function(event_source){
+		onSelectionChange: function(event_source){
+			this.updateFacets({event_source: event_source});
+		},
+
+		updateFacets: function(opts){
+			opts = opts || {};
 			this.model.each(function(m){
 
 				var combined_selections = this.model.getSelections();
 				
 				// Update facets except for facet which triggered the change.
-				if (m.cid != event_source.id){
+				if ( opts.force || (m.cid != opts.event_source.id) ){
 
 					// Facets should not use their own selections as filters.
 					var filters = [];
