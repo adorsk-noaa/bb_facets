@@ -13,6 +13,9 @@ var FacetModel = Backbone.Model.extend({
 	},
 
 	initialize: function(){
+	},
+
+	getData: function(){
 	}
 
 });

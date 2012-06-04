@@ -47,7 +47,7 @@ function($, Backbone, _, ui, template, RadioSelectFacetView, ListFacetView){
 						}
 					});
 					m.set({parameters: parameters}, {silent: true});
-					m.fetch();
+					m.getData();
 				}
 			} ,this);
 
