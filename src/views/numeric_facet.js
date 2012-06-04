@@ -25,7 +25,7 @@ function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView
 			this.range_selection = new RangeSelectionModel();
 			this.updateRange();
 
-			this.range_selection.on('change', this.onSelectionChange, this);
+			this.range_selection.on('change', this.onRangeChange, this);
 			this.model.on('change:base_histogram', this.renderBaseHistogram, this);
 			this.model.on('change:filtered_histogram', this.renderFilteredHistogram, this);
 		},
@@ -195,7 +195,7 @@ function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView
 			});
 		},
 
-		onSelectionChange: function(){
+		onRangeChange: function(){
 			// Show reset button if the full range is not selected.
 			if ((this.range_selection.get('selection_min') != this.range_selection.get('range_min')) ||
 				(this.range_selection.get('selection_max') != this.range_selection.get('range_max'))){
@@ -204,7 +204,7 @@ function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView
 			else{
 				$('.facet-reset-button', $(this.el)).css('visibility', 'hidden');
 			}
-			this.updateFilters();		
+			this.updateSelection();		
 		},
 
 		getWidgetValues: function(){
@@ -214,13 +214,13 @@ function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView
 			};
 		},
 
-		updateFilters: function(){
-			var selection = this.getWidgetValues();
-			filters = [
-				{field: this.model.get('grouping_field').id, transform: this.model.get('grouping_field').transform, op: '>=', value: selection['selection_min']},
-				{field: this.model.get('grouping_field').id, transform: this.model.get('grouping_field').transform, op: '<=', value: selection['selection_max']}
+		updateSelection: function(){
+			var values = this.getWidgetValues();
+			selection = [
+				{ entity: {'expression': this.model.get('grouping_entity').expression}, op: '>=', value: values['selection_min']},
+				{ entity: {'expression': this.model.get('grouping_entity').expression}, op: '<=', value: values['selection_max']}
 			];
-			this.model.set({filters: filters});
+			this.model.set({selection: selection});
 		},
 
 		resetFilters: function(){

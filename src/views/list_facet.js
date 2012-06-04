@@ -148,17 +148,17 @@ function($, Backbone, _, ui, _s, FacetView, template, choices_template){
 			choice_id = $('input[type=checkbox]', $(facet_choice_el)).data('choice_id');
 			this.selected_choices[choice_id] = ! this.selected_choices[choice_id];
 
-			this.updateFilters();
+			this.updateSelection();
 			this.updateResetButton();
 		},
 
-		updateFilters: function(){
+		updateSelection: function(){
 			selected_values = _.keys(this.getWidgetValues());
-			filters = [];
+			selection = [];
 			if (selected_values.length > 0){
-				filters = [{field: this.model.id, op: 'in', value: selected_values}];
+				selection = [{entity: {expression: this.model.get('grouping_entity').expression}, op: 'in', value: selected_values}];
 			}
-			this.model.set({filters: filters});
+			this.model.set({selection: selection});
 		},
 
 		updateResetButton: function(){
@@ -182,7 +182,7 @@ function($, Backbone, _, ui, _s, FacetView, template, choices_template){
 				facet_choice_el.removeClass('facet-choice-selected');
 			});
 			this.selected_choices = {};
-			this.updateFilters();
+			this.updateSelection();
 		}
 
 	});

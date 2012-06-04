@@ -9,6 +9,7 @@ var FacetModel = Backbone.Model.extend({
 		label: '',
 		type: '',
 		filters: {},
+		selection: {}
 	},
 
 	initialize: function(){
