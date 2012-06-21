@@ -24,10 +24,10 @@ function($, Backbone, _, ui, _s, FacetView, template, choices_template){
 
 		initialize: function(opts){
 
-			this.controls = opts.controls || {
+			this.controls = _.extend({}, {
 				'toggle': true,
-				'info': true
-			};
+				'info': false
+			}, opts.controls);
 
 			FacetView.prototype.initialize.call(this, arguments);
 
