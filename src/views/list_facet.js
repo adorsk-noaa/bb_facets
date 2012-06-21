@@ -22,7 +22,13 @@ function($, Backbone, _, ui, _s, FacetView, template, choices_template){
 			"click .facet-reset-button": "resetFilters"
 		},
 
-		initialize: function(){
+		initialize: function(opts){
+
+			this.controls = opts.controls || {
+				'toggle': true,
+				'info': true
+			};
+
 			FacetView.prototype.initialize.call(this, arguments);
 
 			// For keeping track of selected choices.
@@ -108,7 +114,7 @@ function($, Backbone, _, ui, _s, FacetView, template, choices_template){
 			formatted_choices = this.formatChoices(choices);
 
 			// Update choice elements.
-			choices_html = _.template(choices_template, {choices: formatted_choices});
+			choices_html = _.template(choices_template, {choices: formatted_choices, controls: this.controls});
 			$('.facet-choices', $(this.el)).html(choices_html);
 
 			// Re-select choices which are still present.
@@ -116,7 +122,7 @@ function($, Backbone, _, ui, _s, FacetView, template, choices_template){
 			$('.facet-choice', $(this.el)).each(function(i, facet_choice_el){
 				choice_id = $('input[type=checkbox]', $(facet_choice_el)).data('choice_id');
 				if (_this.selected_choices[choice_id]){
-					$(facet_choice_el).toggleClass('facet-choice-selected');
+					$(facet_choice_el).toggleClass('selected');
 					$('input[type=checkbox]', $(facet_choice_el)).attr('checked', true);
 				}
 			});
@@ -142,7 +148,7 @@ function($, Backbone, _, ui, _s, FacetView, template, choices_template){
 
 			// Toggle selected class on choice.
 			facet_choice_el = event.currentTarget;
-			$(facet_choice_el).toggleClass('facet-choice-selected');
+			$(facet_choice_el).toggleClass('selected');
 
 			// Toggle choice selection state.
 			choice_id = $('input[type=checkbox]', $(facet_choice_el)).data('choice_id');
@@ -179,7 +185,7 @@ function($, Backbone, _, ui, _s, FacetView, template, choices_template){
 				$(e).prop('checked', false);
 				choice_id = $(e).data('choice_id');
 				facet_choice_el = $('#facet-choice--' + choice_id);
-				facet_choice_el.removeClass('facet-choice-selected');
+				facet_choice_el.removeClass('selected');
 			});
 			this.selected_choices = {};
 			this.updateSelection();

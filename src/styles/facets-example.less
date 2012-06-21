@@ -116,59 +116,88 @@
 		display: table-row;
 		clear: both;
 
-		cursor: pointer;
 		color: blue;
 
-		&:hover{
-			background: @fill_secondary;
-		}
 
 		.cell{
 			display: table-cell;
-			padding: 0px 1em;
 		}
 
+		> .text-cell > .text {
+			padding: 0px 1em;
 
-		.text{
-			.title{
+			> .title {
+				cursor: pointer;
 			}
-			.count{
+			> .count{
 				padding-left: 5px;
 				font-size: 0.85em;
 				color: @light_grey;
 			}
 		}
 
-		.icon{
-			display: table-cell;
-			width: 50px;
-			.count-image{
-				width: 100%;
-				.scalebar-container{
-					border: thin solid @faint_grey;
-					display: block;
-				}
-				.scalebar-fill{
-					background-color: @chrome_primary
-				}
-			}
-		}
-		.controls{
-			display: table-cell;
-			width: 10px;
-			.toggle{
-				padding-left: 5px;
-				font-size: 0.85em;
-				font-weight: normal;
-			}
-		}
-	}
+		> .icon-cell {
+			width: 30%;
 
-	.facet-choice-selected{
-		.text{
-			.title{
-				font-weight: bold;
-				color: @selected_highlight;
+			> .icon {
+				width: 100%;
+
+				.count-image{
+					width: 100%;
+					.scalebar-container{
+						border: thin solid @faint_grey;
+						display: block;
+					}
+					.scalebar-fill{
+						background-color: @chrome_primary
+					}
+				}
+			}
+		}
+
+		> .controls-cell {
+			width: 30%;
+		
+			> .controls{
+				width: 100%;
+
+				> .control {
+					visibility: hidden;
+					float: right;
+				}
+
+				> .toggle{
+					padding-left: 5px;
+					font-size: 0.85em;
+					font-weight: normal;
+				}
+
+				> .info {
+					cursor: pointer;
+				}
+			}
+		}
+
+
+		&.selected{
+
+			.text{
+				.title{
+					font-weight: bold;
+					color: @selected_highlight;
+				}
+			}
+
+			> .controls-cell > .controls > .toggle {
+				visibility: visible;
+			}
+		}
+
+		&:hover{
+			background-color: @fill_secondary;
+
+			.controls-cell > .controls > .control{
+				visibility: visible;
 			}
 		}
 	}
