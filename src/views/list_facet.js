@@ -73,7 +73,7 @@ function($, Backbone, _, ui, _s, FacetView, template, choices_template){
 				formatted_choice = {
                     widget_id: _s.sprintf("facet-%s--choice-%s", this.model.cid, choice.id),
 					id: choice['id'],
-					label: choice['label'],
+					label: choice['label']
 				};
 
 				// Add count label and image.
@@ -136,11 +136,11 @@ function($, Backbone, _, ui, _s, FacetView, template, choices_template){
 		},
 
 		getWidgetValues: function(){
-			 widget_values = {};
+			 widget_values = [];
 			 $('.facet-choice input[type=checkbox]:checked', $(this.el)).each(function(i,e){
 				 choice_id = $(e).data('choice_id');
 				 val = $(e).val();
-				 widget_values[choice_id] = val;
+				 widget_values.push(val);
 			 });
 			 return widget_values;
 		},
@@ -155,22 +155,8 @@ function($, Backbone, _, ui, _s, FacetView, template, choices_template){
 			choice_id = $('input[type=checkbox]', $(facet_choice_el)).data('choice_id');
 			this.selected_choices[choice_id] = ! this.selected_choices[choice_id];
 
-			this.updateSelection();
+			this.updateFilters();
 			this.updateResetButton();
-		},
-
-        formatSelection: function(selected_values){
-			formatted_selection = [];
-			if (selected_values.length > 0){
-				formatted_selection = [{entity: {expression: this.model.get('grouping_entity').expression}, op: 'in', value: selected_values}];
-			}
-            return formatted_selection;
-        },
-
-		updateSelection: function(){
-			var selected_values = _.keys(this.getWidgetValues());
-            var formatted_selection = this.formatSelection(selected_values);
-			this.model.set({selection: formatted_selection});
 		},
 
 		updateResetButton: function(){

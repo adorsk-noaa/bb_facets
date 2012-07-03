@@ -12,6 +12,21 @@ function($, Backbone, _){
 			//console.log('FacetView:initialize');
 		},
 
+        // This method should be overriden.
+        getWidgetValues: function(){
+        },
+
+        // This function will likely be overriden.
+        updateFilters: function(){
+            var selected_values = this.getWidgetValues();
+            this.model.set('filters', this.formatFilters(selected_values));
+        },
+
+        // This function will likely be overriden in the facet's application context.
+        formatFilters: function(selected_values){
+            return selected_values;
+        },
+        
 		makeResizeable: function(){
 			$(".facet-body", $(this.el)).resizable({
 				minHeight: 30,

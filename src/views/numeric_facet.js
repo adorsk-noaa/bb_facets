@@ -214,15 +214,6 @@ function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView
 			};
 		},
 
-		updateSelection: function(){
-			var values = this.getWidgetValues();
-			selection = [
-				{ entity: {'expression': this.model.get('grouping_entity').expression}, op: '>=', value: values['selection_min']},
-				{ entity: {'expression': this.model.get('grouping_entity').expression}, op: '<=', value: values['selection_max']}
-			];
-			this.model.set({selection: selection});
-		},
-
 		resetFilters: function(){
 			this.range_selection.set({
 				selection_min: this.range_selection.get('range_min'),
