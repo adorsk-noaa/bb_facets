@@ -71,6 +71,7 @@ function($, Backbone, _, ui, _s, FacetView, template, choices_template){
 
 				// Keep original id and label.
 				formatted_choice = {
+                    widget_id: _s.sprintf("facet-%s--choice-%s", this.model.cid, choice.id),
 					id: choice['id'],
 					label: choice['label'],
 				};
@@ -80,7 +81,7 @@ function($, Backbone, _, ui, _s, FacetView, template, choices_template){
 				formatted_choice['count_image'] = choice_count_images[i];
 				
 				formatted_choices.push(formatted_choice);
-			});
+			}, this);
 
 			return formatted_choices;
 		},
@@ -158,13 +159,18 @@ function($, Backbone, _, ui, _s, FacetView, template, choices_template){
 			this.updateResetButton();
 		},
 
-		updateSelection: function(){
-			selected_values = _.keys(this.getWidgetValues());
-			selection = [];
+        formatSelection: function(selected_values){
+			formatted_selection = [];
 			if (selected_values.length > 0){
-				selection = [{entity: {expression: this.model.get('grouping_entity').expression}, op: 'in', value: selected_values}];
+				formatted_selection = [{entity: {expression: this.model.get('grouping_entity').expression}, op: 'in', value: selected_values}];
 			}
-			this.model.set({selection: selection});
+            return formatted_selection;
+        },
+
+		updateSelection: function(){
+			var selected_values = _.keys(this.getWidgetValues());
+            var formatted_selection = this.formatSelection(selected_values);
+			this.model.set({selection: formatted_selection});
 		},
 
 		updateResetButton: function(){

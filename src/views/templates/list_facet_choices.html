@@ -1,9 +1,9 @@
 <% _.each(choices, function(choice,index) { %>
-<div class="facet-choice" id="facet-choice--<%= choice.id %>">
+<div class="facet-choice" id="facet-choice--<%= choice.widget_id %>">
 
 	<div class="text-cell cell">
 		<div class="text">
-			<label class="title" for="input--<%= choice.id %>"><%= choice.label %></label>
+			<label class="title" for="input--<%= choice.widget_id %>"><%= choice.label %></label>
 			<div class="count"><%= choice.count_label %></div>
 		</div>
 	</div>
@@ -16,7 +16,7 @@
 	<div class="controls-cell cell">
 		<div class="controls">
 			<% if (controls.toggle) { %>
-			<input class="toggle control" type="checkbox" id="input--<%= choice.id %>" data-choice_id="<%= choice.id %>" value="<%= choice.value %>">
+			<input class="toggle control" type="checkbox" id="input--<%= choice.widget_id %>" data-choice_id="<%= choice.widget_id %>" value="<%= choice.value %>">
 			<% } %>
 
 			<% if (controls.info) { %>
