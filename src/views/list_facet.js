@@ -45,7 +45,7 @@ function($, Backbone, _, ui, _s, FacetView, template, choices_template){
 		},
 		
 		renderWidget: function(){
-			widget_html = _.template(template, {model: this.model.toJSON()});
+			widget_html = _.template(template, {model: this.model});
 			$(this.el).html(widget_html);
 
 			FacetView.prototype.makeResizeable.call(this);

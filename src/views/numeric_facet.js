@@ -85,7 +85,7 @@ function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView
 		},
 		
 		renderWidget: function(){
-			widget_html = _.template(template, {model: this.model.toJSON()});
+			widget_html = _.template(template, {model: this.model});
 			$(this.el).html(widget_html);
 			return this;
 		},
