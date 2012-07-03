@@ -50,7 +50,10 @@ function($, Backbone, _, ui, template, RadioSelectFacetView, ListFacetView){
 						}
 					});
 					m.set({filters: filters}, {silent: true});
-					m.getData();
+
+                    if (m.getData){
+                        m.getData();
+                    }
 				}
 			} ,this);
 
