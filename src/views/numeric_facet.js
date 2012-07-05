@@ -207,7 +207,7 @@ function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView
 			this.updateSelection();		
 		},
 
-		getWidgetValues: function(){
+		getWidgetValue: function(){
 			return {
 				selection_min: this.range_selection.get('selection_min'),
 				selection_max : this.range_selection.get('selection_max')

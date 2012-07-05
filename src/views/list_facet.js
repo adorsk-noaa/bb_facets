@@ -135,7 +135,7 @@ function($, Backbone, _, ui, _s, FacetView, template, choices_template){
 
 		},
 
-		getWidgetValues: function(){
+		getWidgetValue: function(){
 			 widget_values = [];
 			 $('.facet-choice input[type=checkbox]:checked', $(this.el)).each(function(i,e){
 				 choice_id = $(e).data('choice_id');

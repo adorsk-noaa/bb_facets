@@ -51,10 +51,10 @@ function($, Backbone, _, ui, _s, FacetView, uiExtras, template){
         },
 
 		onSliderChange: function(event){
-			this.updateSelection();
+			this.updateFilters();
 		},
 
-		updateSelection: function(){
+		getWidgetValue: function(){
 			selected_value = this.$selectSlider.selectSlider('option', 'value');
 
             var value_type = this.model.get('value_type');
@@ -62,8 +62,7 @@ function($, Backbone, _, ui, _s, FacetView, uiExtras, template){
                 selected_value = parseFloat(selected_value);
             }
 
-            selection = [{entity: {expression: this.model.get('grouping_entity').expression}, op: '==', value: selected_value}];
-			this.model.set({selection: selection});
+            return selected_value;
 		}
 
 	});
