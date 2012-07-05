@@ -1,9 +1,9 @@
 <% _.each(choices, function(choice,index) { %>
-<div class="facet-choice" id="facet-choice--<%= choice.widget_id %>">
+<label class="facet-choice" id="facet-choice--<%= choice.widget_id %>" for="input--<%= choice.widget_id %>">
 
 	<div class="text-cell cell">
 		<div class="text">
-			<label class="title" for="input--<%= choice.widget_id %>"><%= choice.label %></label>
+			<div class="title" for="input--<%= choice.widget_id %>"><%= choice.label %></div>
 			<div class="count"><%= choice.count_label %></div>
 		</div>
 	</div>
@@ -27,6 +27,6 @@
 		</div>
 	</div>
 
-</div>
+</label>
 
 <% }); %>
