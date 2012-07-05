@@ -47,6 +47,14 @@ function($, Backbone, _, ui, _s, FacetView, uiExtras, template){
                 }));
             }, this);
 
+            // Show labels on first and last choices.
+            if (preparedChoices[0]){
+                preparedChoices[0].showLabel = true;
+            }
+            if (preparedChoices.length > 1){
+                preparedChoices[preparedChoices.length - 1].showLabel = true;
+            }
+
             return preparedChoices;
         },
 
