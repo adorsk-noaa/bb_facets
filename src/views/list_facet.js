@@ -180,7 +180,7 @@ function($, Backbone, _, ui, _s, FacetView, template, choices_template){
 				facet_choice_el.removeClass('selected');
 			});
 			this.selected_choices = {};
-			this.updateSelection();
+			this.updateFilters();
 		}
 
 	});
