@@ -191,7 +191,7 @@ function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView
 			this.text_inputs = new RangeTextInputsView({
 				model: this.range_selection,
 				el: '.textinputs-widget',
-				label: 'Depth'
+				label: this.model.get('label')
 			});
 		},
 
@@ -204,7 +204,7 @@ function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView
 			else{
 				$('.facet-reset-button', $(this.el)).css('visibility', 'hidden');
 			}
-			this.updateSelection();		
+			this.updateFilters();		
 		},
 
 		getWidgetValue: function(){
