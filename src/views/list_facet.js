@@ -60,9 +60,6 @@ function($, Backbone, _, ui, _s, FacetView, template, choices_template){
 
 			var formatted_choices = [];
 
-			// Get count labels.
-			var choice_count_labels = this.formatChoiceCountLabels(choices);
-
 			// Get count images.
 			var choice_count_images =this.formatChoiceCountImages(choices);
 
@@ -73,26 +70,17 @@ function($, Backbone, _, ui, _s, FacetView, template, choices_template){
 				formatted_choice = {
                     widget_id: _s.sprintf("facet-%s--choice-%s", this.model.cid, choice.id),
 					id: choice['id'],
-					label: choice['label']
+					label: choice['label'],
+                    count_label: choice['count_label'] || choice['count']
 				};
 
-				// Add count label and image.
-				formatted_choice['count_label'] = choice_count_labels[i];
+				// Add image.
 				formatted_choice['count_image'] = choice_count_images[i];
 				
 				formatted_choices.push(formatted_choice);
 			}, this);
 
 			return formatted_choices;
-		},
-
-		formatChoiceCountLabels: function(choices){
-			var choice_count_labels = [];
-			_.each(choices, function(choice){
-				choice_count_labels.push(choice['count']);	
-			});
-
-			return choice_count_labels;
 		},
 
 		formatChoiceCountImages: function(choices){
