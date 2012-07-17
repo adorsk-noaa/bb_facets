@@ -13,6 +13,9 @@ function($, Backbone, _, ui, _s, FacetView, uiExtras, template){
 	var TimeSliderFacetView = FacetView.extend({
 
 		initialize: function(opts){
+			// For keeping track of selected choice.
+			this.selected_choice = null;
+
             this.initialRender();
             this.model.on('change:choices', this.renderChoices, this);
 		},
@@ -36,6 +39,11 @@ function($, Backbone, _, ui, _s, FacetView, uiExtras, template){
         renderChoices: function(){
             var preparedChoices = this._prepareChoices(this.model.get('choices'));
             this.$selectSlider.selectSlider('option', {'choices': preparedChoices});
+
+			// Re-select choice if still present.
+			if (this.selected_value){
+                this.$selectSlider.selectSlider('value', this.selected_value);
+            }
         },
 
         _prepareChoices: function(choices){
@@ -59,6 +67,7 @@ function($, Backbone, _, ui, _s, FacetView, uiExtras, template){
         },
 
 		onSliderChange: function(event){
+            this.selected_value = this.$selectSlider.selectSlider('option', 'value');
 			this.updateFilters();
 		},
 
