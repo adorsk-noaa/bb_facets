@@ -34,8 +34,8 @@ function($, Backbone, _, ui, _s, FacetView, template, choices_template){
 			// For keeping track of selected choices.
 			this.selected_choices = {};
 
-			// Re-render when choices change.
-			this.model.on('change:choices', this.renderChoices, this);
+			// Re-render when choices or total changes.
+			this.model.on('change:choices change:total', this.renderChoices, this);
 		},
 
 		render: function(){
