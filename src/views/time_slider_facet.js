@@ -44,6 +44,13 @@ function($, Backbone, _, ui, _s, FacetView, uiExtras, template){
 			if (this.selected_value){
                 this.$selectSlider.selectSlider('value', this.selected_value);
             }
+
+            // Otherwise select the first choice.
+            else{
+                if (preparedChoices.length > 0){
+                    this.$selectSlider.selectSlider('value', preparedChoices[0].value);
+                }
+            }
         },
 
         _prepareChoices: function(choices){
