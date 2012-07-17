@@ -22,6 +22,12 @@ function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView
 		initialize: function(){
 			FacetView.prototype.initialize.call(this, arguments);
 
+            // Remember selected values.
+            this.selection = {
+                min: null,
+                max: null
+            };
+
 			this.range_selection = new RangeSelectionModel();
 			this.updateRange();
 
@@ -31,16 +37,39 @@ function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView
 		},
 
 		updateRange: function(){
-			var base_histogram_stats = this.getHistogramStats(this.model.get('base_histogram'));
-			var filtered_histogram_stats = this.getHistogramStats(this.model.get('filtered_histogram'));
+            var range_min = this.model.get('range_min');
+            var range_max = this.model.get('range_max');
+
+            if (this.model.get('range_auto')){
+                var base_histogram_stats = this.getHistogramStats(this.model.get('base_histogram'));
+				range_min = base_histogram_stats['x_min'];
+				range_max = base_histogram_stats['x_max'];
+            }
+
+            var selection_min = 0;
+            var selection_max = 100;
+            if (this.selection.min == null || this.selection.max == null){
+                var filtered_histogram_stats = this.getHistogramStats(this.model.get('filtered_histogram'));
+                selection_min = filtered_histogram_stats['x_min'];
+                selection_max = filtered_histogram_stats['x_max'];
+            }
+            else{
+                selection_min = this.selection['min']; 
+                selection_max = this.selection['max'];
+            }
+
 			this.range_selection.set({
-				range_min: base_histogram_stats['x_min'],
-				range_max: base_histogram_stats['x_max'],
-				selection_min: filtered_histogram_stats['x_min'],
-				selection_max: filtered_histogram_stats['x_max'],
+				range_min: range_min,
+				range_max: range_max,
+				selection_min: selection_min,
+				selection_max: selection_max
 			});
 
-			$('.facet-controls .range', this.el).html(_s.sprintf("%.1f to %.1f", base_histogram_stats['x_min'], base_histogram_stats['x_max']));
+            var format = this.model.get('format') || "%.1f";
+            var formatted_min = _s.sprintf(format, range_min);
+            var formatted_max= _s.sprintf(format, range_max);
+
+			$('.facet-controls .range', this.el).html(_s.sprintf("%s to %s", formatted_min, formatted_max));
 		},
 
 		getHistogramStats: function(histogram){
@@ -204,6 +233,8 @@ function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView
 			else{
 				$('.facet-reset-button', $(this.el)).css('visibility', 'hidden');
 			}
+            this.selection.min = this.range_selection.get('selection_min');
+            this.selection.max = this.range_selection.get('selection_max');
 			this.updateFilters();		
 		},
 
@@ -219,6 +250,8 @@ function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView
 				selection_min: this.range_selection.get('range_min'),
 				selection_max: this.range_selection.get('range_max')
 			});
+            this.selection.min = null;
+            this.selection.max = null;
 		}
 
 	});
