@@ -20,6 +20,15 @@ function($, Backbone, _, _s, template){
         initialRender: function(){
 			var html = _.template(template, {model: this.model});
 			$(this.el).html(html);
+
+            // If facet has info, add info control.
+            var info = this.model.get('info');
+            if (info){
+                var $info = $(_s.sprintf('<a class="control facet-info-button info-button" href="javascript:{}">info</a>'));
+                $info.appendTo($('.facet-header', this.el));
+                var $info_content = $(_s.sprintf('<div class="content">%s</div>', info));
+                $info_content.appendTo($info);
+            }
         },
 
         postInitialize: function(){
@@ -43,6 +52,9 @@ function($, Backbone, _, _s, template){
         addResetButton: function(){
             var $reset = $('<a class="control facet-reset-button" href="javascript:{}" style="visibility:hidden;">reset</a>');
             $reset.appendTo($('.facet-header', this.el));
+        },
+
+        addInfoButton: function(){
         },
         
 		makeResizeable: function(){
