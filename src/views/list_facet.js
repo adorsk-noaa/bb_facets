@@ -26,7 +26,6 @@ function($, Backbone, _, ui, _s, FacetView, template, choices_template){
 
 			this.controls = _.extend({}, {
 				'toggle': true,
-				'info': false
 			}, opts.controls);
 
 			FacetView.prototype.initialize.call(this, arguments);
