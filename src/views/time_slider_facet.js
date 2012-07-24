@@ -6,23 +6,24 @@ define([
 	"_s",
 	"./facet",
 	"uiExtras",
-	"text!./templates/time_slider_facet.html"
-		],
-function($, Backbone, _, ui, _s, FacetView, uiExtras, template){
+    ],
+function($, Backbone, _, ui, _s, FacetView, uiExtras){
 
 	var TimeSliderFacetView = FacetView.extend({
 
 		initialize: function(opts){
-			// For keeping track of selected choice.
 			this.selected_choice = null;
 
-            this.initialRender();
-            this.model.on('change:choices', this.renderChoices, this);
+			FacetView.prototype.initialize.call(this, arguments);
+            $(this.el).addClass("time-slider-facet");
+
 		},
 
-        initialRender: function(){
-            $(this.el).html(_.template(template, {model: this.model}));
-            this.$selectSlider = $('.select-slider', this.el);
+        postInitialize: function(){
+            // Create select slider.
+            this.$selectSlider = $('<div class="select-slider"></div>');
+            this.$selectSlider.appendTo($('.facet-body > .inner', this.el));
+
             var _this = this;
             this.$selectSlider.selectSlider({
                 'showTics': true,
@@ -34,6 +35,9 @@ function($, Backbone, _, ui, _s, FacetView, uiExtras, template){
                 }
             });
             this.renderChoices();
+
+            // Listen for events.
+            this.model.on('change:choices', this.renderChoices, this);
         },
 
         renderChoices: function(){

@@ -16,7 +16,6 @@ function($, Backbone, _, ui, _s, template){
 
 		initialize: function(){
 			this.render();
-
 			this.model.on('change', this.onRangeSelectionChange, this);
 		},
 

@@ -1,0 +1,124 @@
+@link_primary: #11c;
+@link_secondary: #4272db;
+@chrome_primary: #bcf;
+@chrome_secondary: #e3e9ff;
+@chrome_dark: #828eb2;
+@fill_primary: #ebeef8;
+@fill_secondary: #f2f2f2;
+@fill_editable: #ffffd6;
+@selected_primary: #68e;
+@selected_highlight: #FF6A00;
+@green_primary: #282;
+@green_secondary: #3d3;
+@notification_primary: #fe8;
+@faint_grey: #ddd;
+@light_grey: #999;
+@metadata_grey: #777;
+@near_black: #444;
+@dialog_frame: #3a5774;
+@dialog_border: #c1d9ff;
+@dialog_header: #e0edfe;
+@dialog_footer: #eee;
+@padding_tighter: 3px;
+@padding_tight: 5px;
+@padding_normal: 7px;
+@padding_loose: 10px;
+@padding_looser: 15px;
+
+.list-facet {
+    .facet-choices{
+
+        display: table;
+        width: 100%;
+        border-spacing: 0px .7em;
+
+        .facet-choice {
+            display: table-row;
+            clear: both;
+            color: blue;
+            cursor: pointer;
+
+            .cell{
+                display: table-cell;
+            }
+
+            > .text-cell > .text {
+                padding: 0px 1em;
+
+                > .title {
+                }
+                > .count{
+                    padding-left: 5px;
+                    font-size: 0.85em;
+                    color: @light_grey;
+                }
+            }
+
+            > .icon-cell {
+                width: 30%;
+
+                > .icon {
+                    width: 100%;
+
+                    .count-image{
+                        width: 100%;
+                        .scalebar-container{
+                            border: thin solid @faint_grey;
+                            display: block;
+                        }
+                        .scalebar-fill{
+                            background-color: @chrome_primary
+                        }
+                    }
+                }
+            }
+
+            > .controls-cell {
+                width: 30%;
+
+                > .controls{
+                    width: 100%;
+
+                    > .control {
+                        visibility: hidden;
+                        float: right;
+                    }
+
+                    > .toggle{
+                        padding-left: 5px;
+                        font-size: 0.85em;
+                        font-weight: normal;
+                        cursor: pointer;
+                    }
+
+                    > .info {
+                        cursor: pointer;
+                    }
+                }
+            }
+
+
+            &.selected{
+
+                .text{
+                    .title{
+                        font-weight: bold;
+                        color: @selected_highlight;
+                    }
+                }
+
+                > .controls-cell > .controls > .toggle {
+                    visibility: visible;
+                }
+            }
+
+            &:hover{
+                background-color: @fill_secondary;
+
+                .controls-cell > .controls > .control{
+                    visibility: visible;
+                }
+            }
+        }
+    }
+}

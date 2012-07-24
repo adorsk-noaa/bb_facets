@@ -6,29 +6,25 @@ define([
 	"use!ui",
 	"_s",
 	"./facet",
-	"text!./templates/list_facet.html",
 	"text!./templates/list_facet_choices.html",
 		],
-function($, Backbone, _, ui, _s, FacetView, template, choices_template){
+function($, Backbone, _, ui, _s, FacetView, choices_template){
 
 	var ListFacetView = FacetView.extend({
 
 		events: {
-
-			// Run updates when choices change.
 			"change .facet-choice": "onChoiceChange",
-
-			// Reset choices when the rest button is clicked.
 			"click .facet-reset-button": "resetFilters"
 		},
 
 		initialize: function(opts){
 
-			this.controls = _.extend({}, {
+			this.choice_controls = _.extend({}, {
 				'toggle': true,
-			}, opts.controls);
+			}, opts.choice_controls);
 
 			FacetView.prototype.initialize.call(this, arguments);
+            $(this.el).addClass("list-facet");
 
 			// For keeping track of selected choices.
 			this.selected_choices = {};
@@ -37,20 +33,24 @@ function($, Backbone, _, ui, _s, FacetView, template, choices_template){
 			this.model.on('change:choices change:total', this.renderChoices, this);
 		},
 
-		render: function(){
-			this.renderWidget();
-			this.renderChoices();
-			return this;
-		},
-		
-		renderWidget: function(){
-			widget_html = _.template(template, {model: this.model});
-			$(this.el).html(widget_html);
+        postInitialize: function(){
+            FacetView.prototype.postInitialize.call(this, arguments);
 
+            // Make resizable.
 			FacetView.prototype.makeResizeable.call(this);
-		},
 
+            // Add reset control to title controls.
+            this.addResetButton();
 
+            // Add choice count to status.
+            var $count = $('<span><span class="choices-count"></span> choices</span>');
+            $count.appendTo($('.facet-status', this.el));
+
+            // Add choices container to body.
+            var $choices = $('<div class="facet-choices"></div>');
+            $choices.appendTo($('.facet-body > .inner', this.el));
+        },
+		
 		// Default choice formatter.
 		formatChoices: function(choices){
 			if (choices.length == 0){
@@ -102,7 +102,7 @@ function($, Backbone, _, ui, _s, FacetView, template, choices_template){
 			formatted_choices = this.formatChoices(choices);
 
 			// Update choice elements.
-			choices_html = _.template(choices_template, {choices: formatted_choices, controls: this.controls});
+			choices_html = _.template(choices_template, {choices: formatted_choices, choice_controls: this.choice_controls});
 			$('.facet-choices', $(this.el)).html(choices_html);
 
 			// Re-select choices which are still present.

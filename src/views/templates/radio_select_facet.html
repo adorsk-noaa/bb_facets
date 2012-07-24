@@ -1,8 +1,0 @@
-<div class="radio-select-facet-widget">
-	<% _.each(model.options, function(v,k) { %>
-	<div class="options">
-		<input id="<% print(model.id + '.' + v[0]); %>" type="radio" name="<%= model.id %>" value="<%= v[1] %>"> 
-		<label for="<%= model.id %>"> <%= v[0] %></label>
-	</div>
-	<% }); %>
-</div>

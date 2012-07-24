@@ -7,34 +7,51 @@ define([
 	"./facet",
 	"./../models/range_selection",
 	"./range_slider",
-	"text!./templates/numeric_facet.html",
+	"text!./templates/numeric_facet_body.html",
 		],
-function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView, template){
+function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView, body_template){
 
 	var NumericFacetView = FacetView.extend({
 
 		events: {
-
-			// Reset button.
 			"click .facet-reset-button": "resetFilters",
 		},
 
 		initialize: function(){
-			FacetView.prototype.initialize.call(this, arguments);
-
-            // Remember selected values.
             this.selection = {
                 min: null,
                 max: null
             };
 
-			this.range_selection = new RangeSelectionModel();
-			this.updateRange();
+			FacetView.prototype.initialize.call(this, arguments);
+            $(this.el).addClass("numeric-facet range-facet");
+		},
 
+        postInitialize: function(){
+            FacetView.prototype.postInitialize.call(this, arguments);
+
+            // Add reset control to title controls.
+            this.addResetButton();
+
+            // Add overall range to status.
+            var $overall_range = $('<span>Overall range: <span class="range"></span></span>');
+            $overall_range.appendTo($('.facet-status', this.el));
+
+            // Render body.
+            var body_html = _.template(body_template, {model: this.model});
+            $('.facet-body', this.el).html(body_html);
+
+            // Setup range widgets.
+			this.range_selection = new RangeSelectionModel();
+			this.renderSlider();
+			this.renderTextInputs();
+			this.updateRange();
 			this.range_selection.on('change', this.onRangeChange, this);
+
+            // Listen for events.
 			this.model.on('change:base_histogram', this.renderBaseHistogram, this);
 			this.model.on('change:filtered_histogram', this.renderFilteredHistogram, this);
-		},
+        },
 
 		updateRange: function(){
             var range_min = this.model.get('range_min');
@@ -89,17 +106,10 @@ function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView
 			return stats;
 		},
 
-		render: function(){
-			this.renderWidget();
-			this.renderSlider();
-			this.renderTextInputs();
-			return this;
-		},
-
 		renderBaseHistogram: function(){
 			this.updateRange();
 			this.renderHistogram({
-				el: '.base-histogram',
+				el: $('.base-histogram', this.el),
 				histogram: this.model.get('base_histogram')
 			});
 			return this;
@@ -107,18 +117,12 @@ function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView
 
 		renderFilteredHistogram: function(){
 			this.renderHistogram({
-				el: '.filtered-histogram',
+				el: $('.filtered-histogram', this.el),
 				histogram: this.model.get('filtered_histogram')
 			});
 			return this;
 		},
 		
-		renderWidget: function(){
-			widget_html = _.template(template, {model: this.model});
-			$(this.el).html(widget_html);
-			return this;
-		},
-
 		renderHistogram: function(options){
 			histogram_el = $(options['el'], this.el);
 			histogram_el.empty();
@@ -154,8 +158,8 @@ function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView
 
 		renderSlider: function(){
 			this.slider = new RangeSliderView({
-				model: this.range_selection,
-				el: '.slider-widget'
+				el: $('.slider-widget', this.el),
+				model: this.range_selection
 			});
 		},
 
@@ -218,8 +222,8 @@ function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView
 			});
 
 			this.text_inputs = new RangeTextInputsView({
+				el: $('.textinputs-widget', this.el),
 				model: this.range_selection,
-				el: '.textinputs-widget',
 				label: this.model.get('label')
 			});
 		},
