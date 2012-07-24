@@ -86,7 +86,7 @@ function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView
             var formatted_min = _s.sprintf(format, range_min);
             var formatted_max= _s.sprintf(format, range_max);
 
-			$('.facet-controls .range', this.el).html(_s.sprintf("%s to %s", formatted_min, formatted_max));
+			$('.facet-status .range', this.el).html(_s.sprintf("%s to %s", formatted_min, formatted_max));
 		},
 
 		getHistogramStats: function(histogram){
