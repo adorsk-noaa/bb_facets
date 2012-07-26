@@ -83,11 +83,15 @@ function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView
 			});
 
             var format = this.model.get('format') || "%.1f";
-            var formatted_min = _s.sprintf(format, range_min);
-            var formatted_max= _s.sprintf(format, range_max);
+            var formatted_min = this.formatter(format, range_min);
+            var formatted_max= this.formatter(format, range_max);
 
 			$('.facet-status .range', this.el).html(_s.sprintf("%s to %s", formatted_min, formatted_max));
 		},
+
+        formatter: function(format, value){
+            return _s.sprintf(format, value);
+        },
 
 		getHistogramStats: function(histogram){
 			var stats = {
