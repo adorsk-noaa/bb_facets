@@ -11,7 +11,6 @@ function($, Backbone, _, ui, template){
 
 		initialize: function(){
 			this.renderFacetContainer();
-			this.model.on('change:selection', this.onSelectionChange, this);
 		},
 
 		renderFacetContainer: function(){
@@ -25,36 +24,6 @@ function($, Backbone, _, ui, template){
 			$(".facet-widgets", $(this.el)).append(facet_view.el);
 			facet_view.render();
 			$('.facet-widgets', this.el).sortable('refresh');
-		},	
-
-		onSelectionChange: function(event_source){
-			this.updateFacets({event_source: event_source});
-		},
-
-		updateFacets: function(opts){
-			opts = opts || {};
-			this.model.each(function(m){
-
-				var combined_selections = this.model.getSelections();
-				
-				// Update facets except for facet which triggered the change.
-				if ( opts.force || (m.cid != opts.event_source.id) ){
-
-					// Facets should not use their own selections as filters.
-					var filters = [];
-					_.each(combined_selections, function(v, k){
-						if (k != m.cid){
-							filters = filters.concat(v);
-						}
-					});
-					m.set({filters: filters}, {silent: true});
-
-                    if (m.getData){
-                        m.getData();
-                    }
-				}
-			} ,this);
-
 		}
 		
 	});

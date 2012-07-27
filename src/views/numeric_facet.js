@@ -20,6 +20,7 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
 		initialize: function(){
 			FacetView.prototype.initialize.call(this, arguments);
             $(this.el).addClass("numeric-facet range-facet");
+            this.postInitialize();
 		},
 
         postInitialize: function(){
@@ -169,13 +170,13 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
 
 		getWidgetValue: function(){
 			return {
-				selection_min: this.model.get('min'),
-				selection_max : this.model.get('max')
+				min: this.model.get('min'),
+				max : this.model.get('max')
 			};
 		},
 
 		resetFilters: function(){
-            this.model.set({
+            this.selection.set({
                 'min': '',
                 'max': ''
             });

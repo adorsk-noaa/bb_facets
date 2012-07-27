@@ -14,7 +14,6 @@ function($, Backbone, _, _s, template){
             $(this.el).addClass("facet");
             $(this.el).attr("id", _s.sprintf("facet-%s", this.model.cid));
             this.initialRender();
-            this.postInitialize();
 		},
 
         initialRender: function(){

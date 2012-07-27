@@ -1,10 +1,8 @@
 define([
-	"./models/main",
 	"./views/main",
 ],
-function(models, views){
+function(views){
 	return {
-		models: models,
 		views: views
 	}
 });
