@@ -5,30 +5,38 @@ define([
 	"use!ui",
 	"_s",
 	"./facet",
-	"./../models/range_selection",
 	"./range_slider",
 	"text!./templates/numeric_facet_body.html",
 		],
-function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView, body_template){
+function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
 
 	var NumericFacetView = FacetView.extend({
 
 		events: {
 			"click .facet-reset-button": "resetFilters",
+            "change .selection-input": "onSelectionInputChange"
 		},
 
 		initialize: function(){
-            this.selection = {
-                min: null,
-                max: null
-            };
-
 			FacetView.prototype.initialize.call(this, arguments);
             $(this.el).addClass("numeric-facet range-facet");
 		},
 
         postInitialize: function(){
             FacetView.prototype.postInitialize.call(this, arguments);
+
+            // Initialize selection and range if not set.
+            _.each(['selection', 'range'], function(attr){
+                var attr_model = this.model.get(attr);
+                if (! attr_model){
+                    attr_model = new Backbone.Model({
+                        min: null,
+                        max: null
+                    });
+                    this.model.set(attr, attr_model);
+                }
+                this[attr] = attr_model;
+            }, this);
 
             // Add reset control to title controls.
             this.addResetButton();
@@ -40,53 +48,53 @@ function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView
             // Render body.
             var body_html = _.template(body_template, {model: this.model});
             $('.facet-body', this.el).html(body_html);
+            
+            // Save shortcuts to text inputs.
+            this.selectionInputs = {};
+            _.each(['min', 'max'], function(minmax){
+                var $input = $(_s.sprintf('.selection-inputs input[name="%s"]', minmax));
+                this.selectionInputs[minmax] = $input;
+            }, this);
 
-            // Setup range widgets.
-			this.range_selection = new RangeSelectionModel();
-			this.renderSlider();
-			this.renderTextInputs();
-			this.updateRange();
-			this.range_selection.on('change', this.onRangeChange, this);
-
-            // Listen for events.
-			this.model.on('change:base_histogram', this.renderBaseHistogram, this);
-			this.model.on('change:filtered_histogram', this.renderFilteredHistogram, this);
-        },
-
-		updateRange: function(){
-            var range_min = this.model.get('range_min');
-            var range_max = this.model.get('range_max');
-
-            if (this.model.get('range_auto')){
-                var base_histogram_stats = this.getHistogramStats(this.model.get('base_histogram'));
-				range_min = base_histogram_stats['x_min'];
-				range_max = base_histogram_stats['x_max'];
-            }
-
-            var selection_min = 0;
-            var selection_max = 100;
-            if (this.selection.min == null || this.selection.max == null){
-                var filtered_histogram_stats = this.getHistogramStats(this.model.get('filtered_histogram'));
-                selection_min = filtered_histogram_stats['x_min'];
-                selection_max = filtered_histogram_stats['x_max'];
-            }
-            else{
-                selection_min = this.selection['min']; 
-                selection_max = this.selection['max'];
-            }
-
-			this.range_selection.set({
-				range_min: range_min,
-				range_max: range_max,
-				selection_min: selection_min,
-				selection_max: selection_max
+			this.slider = new RangeSliderView({
+				el: $('.slider-widget', this.el),
+				model: this.model
 			});
 
-            var format = this.model.get('format') || "%.1f";
-            var formatted_min = this.formatter(format, range_min);
-            var formatted_max= this.formatter(format, range_max);
 
-			$('.facet-status .range', this.el).html(_s.sprintf("%s to %s", formatted_min, formatted_max));
+            // Listen for events.
+            this.selection.on('change', this.onSelectionChange, this);
+            this.range.on('change', this.onRangeChange, this);
+			this.model.on('change:base_histogram', this.renderBaseHistogram, this);
+			this.model.on('change:filtered_histogram', this.renderFilteredHistogram, this);
+			this.on('ready', this.onReady, this);
+        },
+
+        onSelectionInputChange: function(e){
+            var minmax = $(e.target).attr('name');
+            var val = this.selectionInputs[minmax].val();
+            this.selection.set(minmax, val);
+        },
+
+        onSelectionChange: function(){
+            // Update text widgets.
+            _.each(['min', 'max'], function(minmax){
+                var val = this.selection.get(minmax);
+                this.selectionInputs[minmax].val(val);
+            }, this);
+
+            // Update filters.
+			this.updateFilters();		
+        },
+
+
+		onRangeChange: function(){
+            var format = this.model.get('format') || "%.1f";
+            var formatted = {};
+            _.each(['min', 'max'], function(minmax){
+                formatted[minmax] = this.formatter(format, this.range.get(minmax));
+            }, this);
+			$('.facet-status .range', this.el).html(_s.sprintf("%s to %s", formatted.min, formatted.max));
 		},
 
         formatter: function(format, value){
@@ -111,7 +119,6 @@ function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView
 		},
 
 		renderBaseHistogram: function(){
-			this.updateRange();
 			this.renderHistogram({
 				el: $('.base-histogram', this.el),
 				histogram: this.model.get('base_histogram')
@@ -160,107 +167,25 @@ function($, Backbone, _, ui, _s, FacetView, RangeSelectionModel, RangeSliderView
 			return this;
 		},
 
-		renderSlider: function(){
-			this.slider = new RangeSliderView({
-				el: $('.slider-widget', this.el),
-				model: this.range_selection
-			});
-		},
-
-		renderTextInputs: function(){
-			RangeTextInputsView = Backbone.View.extend({
-				events: {'change input': 'onInputChange'},
-				initialize: function(options){
-					this.render();
-					this.model.on('change', this.onRangeSelectionChange, this);
-					this.onRangeSelectionChange();
-				},
-				render: function(){
-					$(this.el).html('<input name="selection_min" type="text"><span class="label">&le; ' + this.options.label + ' &le; </span><input name="selection_max" type="text">');
-				},
-				onInputChange: function(){
-					var min_el = $('input[name="selection_min"]', this.el);
-					var max_el = $('input[name="selection_max"]', this.el);
-
-					min = parseFloat($(min_el).attr('value'));
-					max = parseFloat($(max_el).attr('value'));
-
-					// Basic validation.
-					if (min < this.model.get('range_min')){
-						min = this.model.get('range_min');
-						$(min_el).attr('value', min);
-					}
-					else if (min > this.model.get('range_max')){
-						min = this.model.get('range_max');
-						$(min_el).attr('value', min);
-					}
-					
-					if (max < this.model.get('range_min')){
-						max = this.model.get('range_min');
-						$(max_el).attr('value', max); 
-					}
-					else if (max > this.model.get('range_max')){
-						max = this.model.get('range_max');
-						$(max_el).attr('value', max); 
-					}
-
-					if (min > max){
-						$(min_el).attr('value', max);
-					}
-					else if (max < min){
-						$(max_el).attr('value', min);
-					}
-
-					min = parseFloat($(min_el).attr('value'));
-					max = parseFloat($(max_el).attr('value'));
-
-					this.model.set({
-						selection_min: min,
-						selection_max: max
-					});
-				},
-				onRangeSelectionChange: function(){
-					$('input[name="selection_min"]').attr('value', _s.sprintf("%.1f", this.model.get('selection_min')));
-					$('input[name="selection_max"]').attr('value', _s.sprintf("%.1f", this.model.get('selection_max')));
-				}
-			});
-
-			this.text_inputs = new RangeTextInputsView({
-				el: $('.textinputs-widget', this.el),
-				model: this.range_selection,
-				label: this.model.get('label')
-			});
-		},
-
-		onRangeChange: function(){
-			// Show reset button if the full range is not selected.
-			if ((this.range_selection.get('selection_min') != this.range_selection.get('range_min')) ||
-				(this.range_selection.get('selection_max') != this.range_selection.get('range_max'))){
-				$('.facet-reset-button', $(this.el)).css('visibility', 'visible');
-			}
-			else{
-				$('.facet-reset-button', $(this.el)).css('visibility', 'hidden');
-			}
-            this.selection.min = this.range_selection.get('selection_min');
-            this.selection.max = this.range_selection.get('selection_max');
-			this.updateFilters();		
-		},
-
 		getWidgetValue: function(){
 			return {
-				selection_min: this.range_selection.get('selection_min'),
-				selection_max : this.range_selection.get('selection_max')
+				selection_min: this.model.get('min'),
+				selection_max : this.model.get('max')
 			};
 		},
 
 		resetFilters: function(){
-			this.range_selection.set({
-				selection_min: this.range_selection.get('range_min'),
-				selection_max: this.range_selection.get('range_max')
-			});
-            this.selection.min = null;
-            this.selection.max = null;
-		}
+            this.model.set({
+                'min': '',
+                'max': ''
+            });
+		},
+
+        onReady: function(){
+            this.onSelectionChange();
+            this.onRangeChange();
+            this.slider.trigger('ready');
+        }
 
 	});
 

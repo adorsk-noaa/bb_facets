@@ -15,32 +15,46 @@ function($, Backbone, _, ui, _s, template){
 		},
 
 		initialize: function(){
+            $(this.el).addClass('range-slider');
+
+            // Initialize selection and range if not set.
+            _.each(['selection', 'range'], function(attr){
+                var attr_model = this.model.get(attr);
+                if (! attr_model){
+                    attr_model = new Backbone.Model({
+                        min: null,
+                        max: null
+                    });
+                    this.model.set(attr, attr_model);
+                }
+                this[attr] = attr_model;
+            }, this);
+
 			this.render();
-			this.model.on('change', this.onRangeSelectionChange, this);
+
+			this.range.on('change', this.onRangeChange, this);
+			this.selection.on('change', this.onSelectionChange, this);
+			this.on('ready', this.onReady, this);
 		},
 
 		render: function(){
-			widget_html = _.template(template, {model: this.model.toJSON()});
-			$(this.el).html(widget_html);
+			this.$slider = $('<div class="slider"></div>');
+            this.$slider.appendTo(this.el);
 
-			this.slider_el = $('.slider', this.el);
-			this.slider_el.slider({
+			this.$slider.slider({
 				range: true,
-				min: this.model.get('range_min'),
-				max: this.model.get('range_max'),
-				values: [ this.model.get('selection_min'), this.model.get('selection_max')],
-			});
+				min: 0,
+				max: 100,
+				values: [0, 100]
+            });
 
 			// Add divs to the left and right of the slider.
 			$('.ui-slider-range', this.el).before('<div class="ui-slider-range-left" style="position: absolute;"></div>');
 			$('.ui-slider-range', this.el).after('<div class="ui-slider-range-right" style="position: absolute;"></div>');
 
-			// Set initial widths of the divs.
-			this.slider_el.slider("option", "values", [this.model.get('selection_min'), this.model.get('selection_max')]);
-
 			// Have divs track the slider.
 			var _this = this;
-			this.slider_el.on('slide slidechange', function(){
+			this.$slider.on('slide', function(){
 				_this.updateRangeLeftRight();
 			});
 			
@@ -51,7 +65,7 @@ function($, Backbone, _, ui, _s, template){
 			var range_pos = slider_range.position();
 			var range_width = slider_range.width();
 			var range_height = slider_range.height();
-			return {
+			var bounds = {
 				top: range_pos.top, 
 				right: range_pos.left + range_width, 
 				bottom: range_pos.top + range_height, 
@@ -59,6 +73,7 @@ function($, Backbone, _, ui, _s, template){
 				width: range_width,
 				height: range_height
 			};
+            return bounds;
 		},
 
 		updateRangeLeftRight: function(){
@@ -69,15 +84,67 @@ function($, Backbone, _, ui, _s, template){
 		},
 
 		onSlideStop: function(){
-			slider_values = this.slider_el.slider("values");
-			this.model.set({selection_min: slider_values[0], selection_max: slider_values[1]});
+			slider_values = this.$slider.slider("values");
+            // Don't change if slider is at bounds
+            // and existing values exceed bounds.
+            if ( slider_values[0] == this.range.get('min')
+                    && this.selection.get('min') < slider_values[0] ){
+                slider_values[0] = this.selection.get('min');
+            }
+            if ( slider_values[1] == this.range.get('max')
+                    && this.selection.get('max') > slider_values[1] ){
+                slider_values[1] = this.selection.get('max');
+            }
+
+			this.selection.set({
+                min: slider_values[0], 
+                max: slider_values[1]
+            });
+        },
+
+		onRangeChange: function(){
+			this.$slider.slider("option", "min", this.range.get('min'));
+			this.$slider.slider("option", "max", this.range.get('max'));
+            this.onSelectionChange();
 		},
 
-		onRangeSelectionChange: function(){
-			this.slider_el.slider("option", "min", this.model.get('range_min'));
-			this.slider_el.slider("option", "max", this.model.get('range_max'));
-			this.slider_el.slider("option", "values", [this.model.get('selection_min'), this.model.get('selection_max')]);
-		}
+        onSelectionChange: function(){
+            var sanitized = {};
+            // Shortcut for range.
+            var range = {
+                min: this.range.get('min'),
+                max: this.range.get('max')
+            };
+            _.each(['min', 'max'], function(minmax){
+                val = parseFloat(this.selection.get(minmax));
+                // If invalid or exceeds bound, set to range bound.
+                if (isNaN(val)){
+                    sanitized[minmax] = range[minmax];
+                }
+                else if (minmax =='min' && (sanitized.min < range.min)){
+                    sanitized.min = range.min;
+                }
+                else if( minmax == 'max' && (sanitized.max > range.max)){
+                    sanitized.max = range.max;
+                }
+                else{
+                    sanitized[minmax] = val;
+                }
+            }, this);
+
+            // If min > max, set to max.
+            if (sanitized.min > sanitized.max){
+                sanitized.min = sanitized.max;
+            }
+
+            this.$slider.slider("option", "values", [sanitized.min, sanitized.max]);
+            this.updateRangeLeftRight();
+        },
+
+        onReady: function(){
+            this.onRangeChange();
+            this.onSelectionChange();
+        }
 
 	});
 

@@ -50,8 +50,8 @@ function($, Backbone, _, _s, template){
         },
 
         addResetButton: function(){
-            var $reset = $('<a class="control facet-reset-button" href="javascript:{}" style="visibility:hidden;">reset</a>');
-            $reset.appendTo($('.facet-header', this.el));
+            this.$reset = $('<a class="control facet-reset-button" href="javascript:{}" style="visibility:hidden;">reset</a>');
+            this.$reset.appendTo($('.facet-header', this.el));
         },
 
         addInfoButton: function(){
