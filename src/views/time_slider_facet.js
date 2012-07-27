@@ -12,11 +12,10 @@ function($, Backbone, _, ui, _s, FacetView, uiExtras){
 	var TimeSliderFacetView = FacetView.extend({
 
 		initialize: function(opts){
-			this.selected_choice = null;
-
 			FacetView.prototype.initialize.call(this, arguments);
             $(this.el).addClass("time-slider-facet");
 
+            this.postInitialize();
 		},
 
         postInitialize: function(){

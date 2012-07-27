@@ -93,7 +93,8 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
             var format = this.model.get('format') || "%.1f";
             var formatted = {};
             _.each(['min', 'max'], function(minmax){
-                formatted[minmax] = this.formatter(format, this.range.get(minmax));
+                var val = this.range.get(minmax);
+                formatted[minmax] = (val != null) ? this.formatter(format, val) : '---';
             }, this);
 			$('.facet-status .range', this.el).html(_s.sprintf("%s to %s", formatted.min, formatted.max));
 		},

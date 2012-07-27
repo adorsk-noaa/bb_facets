@@ -31,6 +31,8 @@ function($, Backbone, _, ui, _s, FacetView, choices_template){
 
 			// Re-render when choices or total changes.
 			this.model.on('change:choices change:total', this.renderChoices, this);
+
+            this.postInitialize();
 		},
 
         postInitialize: function(){
