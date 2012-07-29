@@ -131,14 +131,14 @@ function($, Backbone, _, ui, _s, FacetView, choices_template){
 
 		},
 
-		getWidgetValue: function(){
-			 widget_values = [];
-			 $('.facet-choice input[type=checkbox]:checked', $(this.el)).each(function(i,e){
-				 choice_id = $(e).data('choice_id');
-				 val = $(e).val();
-				 widget_values.push(val);
-			 });
-			 return widget_values;
+		getSelection: function(){
+            var selection = [];
+            _.each(this.selection.toJSON(), function(selected, choice_id){
+                if (selected){
+                    selection.push(choice_id);
+                }
+            });
+            return selection;
 		},
 
 		onChoiceWidgetChange: function(event){

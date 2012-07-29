@@ -183,7 +183,7 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
 			return this;
 		},
 
-		getWidgetValue: function(){
+		getSelection: function(){
 			return {
 				min: this.model.get('min'),
 				max : this.model.get('max')

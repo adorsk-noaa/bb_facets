@@ -34,18 +34,18 @@ function($, Backbone, _, _s, template){
         },
 
         // This method should be overriden.
-        getWidgetValue: function(){
+        getSelection: function(){
         },
 
         // This function will likely be overriden.
         updateFilters: function(){
-            var widget_value = this.getWidgetValue();
-            this.model.set('filters', this.formatFilters(widget_value));
+            var selection = this.getSelection();
+            this.model.set('filters', this.formatFilters(selection));
         },
 
         // This function will likely be overriden in the facet's application context.
-        formatFilters: function(selected_values){
-            return selected_values;
+        formatFilters: function(selection){
+            return selection;
         },
 
         addResetButton: function(){

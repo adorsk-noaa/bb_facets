@@ -81,15 +81,13 @@ function($, Backbone, _, ui, _s, FacetView, uiExtras){
 			this.updateFilters();
 		},
 
-		getWidgetValue: function(){
-			selected_value = this.$selectSlider.selectSlider('option', 'value');
-
+		getSelection: function(){
+			var selection = this.$selectSlider.selectSlider('option', 'value');
             var value_type = this.model.get('value_type');
             if (value_type == 'numeric'){
-                selected_value = parseFloat(selected_value);
+                selection = parseFloat(selection);
             }
-
-            return selected_value;
+            return selection
 		}
 
 	});
