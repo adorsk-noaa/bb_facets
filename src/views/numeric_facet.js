@@ -120,20 +120,34 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
 			return stats;
 		},
 
+        rangeIsValid: function(){
+            var rmin = parseFloat(this.range.get('min'));
+            var rmax = parseFloat(this.range.get('max'));
+
+            if (isNaN(rmin) || isNaN(rmax) || rmin > rmax){
+                return false;
+            }
+            else{
+                return true;
+            }
+        },
+
 		renderBaseHistogram: function(){
-			this.renderHistogram({
-				el: $('.base-histogram', this.el),
-				histogram: this.model.get('base_histogram')
-			});
-			return this;
+            if (this.rangeIsValid()){
+                this.renderHistogram({
+                    el: $('.base-histogram', this.el),
+                    histogram: this.model.get('base_histogram')
+                });
+            }
 		},
 
 		renderFilteredHistogram: function(){
-			this.renderHistogram({
-				el: $('.filtered-histogram', this.el),
-				histogram: this.model.get('filtered_histogram')
-			});
-			return this;
+            if (this.rangeIsValid()){
+                this.renderHistogram({
+                    el: $('.filtered-histogram', this.el),
+                    histogram: this.model.get('filtered_histogram')
+                });
+            }
 		},
 		
 		renderHistogram: function(options){

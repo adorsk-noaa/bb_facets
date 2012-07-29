@@ -13,11 +13,16 @@ function($, Backbone, _, ui, _s, FacetView, choices_template){
 	var ListFacetView = FacetView.extend({
 
 		events: {
-			"change .facet-choice": "onChoiceChange",
+			"change .facet-choice": "onChoiceWidgetChange",
 			"click .facet-reset-button": "resetFilters"
 		},
 
 		initialize: function(opts){
+
+            if (this.model.get('selection') == null){
+                this.model.set('selection', new Backbone.Model());
+            }
+            this.selection = this.model.get('selection');
 
 			this.choice_controls = _.extend({}, {
 				'toggle': true,
@@ -29,8 +34,9 @@ function($, Backbone, _, ui, _s, FacetView, choices_template){
 			// For keeping track of selected choices.
 			this.selected_choices = {};
 
-			// Re-render when choices or total changes.
+			// Re-render when choices or total or selection changes.
 			this.model.on('change:choices change:total', this.renderChoices, this);
+            this.selection.on('change', this.onSelectionChange, this);
 
             this.postInitialize();
 		},
@@ -69,7 +75,7 @@ function($, Backbone, _, ui, _s, FacetView, choices_template){
 
 				// Keep original id and label.
 				formatted_choice = {
-                    widget_id: _s.sprintf("facet-%s--choice-%s", this.model.cid, choice.id),
+                    widget_id: this.getChoiceWidgetId(choice.id),
 					id: choice['id'],
 					label: choice['label'],
                     count_label: choice['count_label'] || choice['count']
@@ -108,18 +114,19 @@ function($, Backbone, _, ui, _s, FacetView, choices_template){
 			$('.facet-choices', $(this.el)).html(choices_html);
 
 			// Re-select choices which are still present.
-			var _this = this;
+            var _this = this;
 			$('.facet-choice', $(this.el)).each(function(i, facet_choice_el){
-				choice_id = $('input[type=checkbox]', $(facet_choice_el)).data('choice_id');
-				if (_this.selected_choices[choice_id]){
+				choice_id = $('input[type=checkbox]', facet_choice_el).data('choice_id');
+				if (_this.selection.get(choice_id)){
 					$(facet_choice_el).toggleClass('selected');
-					$('input[type=checkbox]', $(facet_choice_el)).attr('checked', true);
+					$('input[type=checkbox]', facet_choice_el).attr('checked', true);
 				}
 			});
 
 			// Update choices count.
 			$('.choices-count', $(this.el)).html(choices.length);
 
+            this.onSelectionChange();
 			this.updateResetButton();
 
 		},
@@ -134,41 +141,65 @@ function($, Backbone, _, ui, _s, FacetView, choices_template){
 			 return widget_values;
 		},
 
-		onChoiceChange: function(event){
+		onChoiceWidgetChange: function(event){
+			$choice_widget = $(event.currentTarget);
+			var choice_id = $('input[type=checkbox]', $choice_widget).data('choice_id');
+            var selected = $choice_widget.hasClass('selected');
 
-			// Toggle selected class on choice.
-			facet_choice_el = event.currentTarget;
-			$(facet_choice_el).toggleClass('selected');
-
-			// Toggle choice selection state.
-			choice_id = $('input[type=checkbox]', $(facet_choice_el)).data('choice_id');
-			this.selected_choices[choice_id] = ! this.selected_choices[choice_id];
-
-			this.updateFilters();
-			this.updateResetButton();
+            // Toggle state in selection model.
+            if (selected){
+                this.selection.unset(choice_id);
+            }
+            else{
+                this.selection.set(choice_id, true);
+            }
 		},
+
+        onSelectionChange: function(){
+            _.each(this.model.get('choices'), function(choice){
+                $choice_widget = this.getChoiceWidgetById(choice.id);
+                var selected = this.selection.get(choice.id);
+                this.setChoiceWidgetState($choice_widget, selected);
+            }, this);
+
+			this.updateResetButton();
+			this.updateFilters();
+        },
+
+        setChoiceWidgetState: function($choice_widget, selected){
+            if (selected){
+                $choice_widget.addClass('selected');
+                $('input[type=checkbox]', $choice_widget).attr('checked', true);
+            }
+            else{
+                $choice_widget.removeClass('selected');
+                $('input[type=checkbox]', $choice_widget).removeAttr('checked');
+            }
+        },
+
+        getChoiceWidgetId: function(choice_id){
+            return _s.sprintf("facet-choice--facet-%s--choice-%s", this.model.cid, choice_id);
+        },
+
+        getChoiceWidgetById: function(choice_id){
+            var widget_id = this.getChoiceWidgetId(choice_id);
+            $facet_choice = $('#' + widget_id);
+            return $facet_choice;
+        },
 
 		updateResetButton: function(){
 			// If anything was checked, show reset button.
-			if( $('.facet-choice input[type=checkbox]:checked', $(this.el)).length > 0 ){
-				$('.facet-reset-button', $(this.el)).css('visibility', 'visible');
-			}
-			// Otherwise hide reset button.
-			else{
-				$('.facet-reset-button', $(this.el)).css('visibility', 'hidden');
-			}
+            var visibility = 'hidden';
+            _.each(this.selection.toJSON(), function(selected, choice_id){
+                if (selected){
+                    visibility = 'visible';
+                }
+            }, this);
+            $('.facet-reset-button', this.el).css('visibility',  visibility);
 		},
 
 		resetFilters: function(){
-
-			// Uncheck all selected, and remove selected class.
-			$('.facet-choice input[type=checkbox]:checked', $(this.el)).each(function(i,e){
-				$(e).prop('checked', false);
-				choice_id = $(e).data('choice_id');
-				facet_choice_el = $('#facet-choice--' + choice_id);
-				facet_choice_el.removeClass('selected');
-			});
-			this.selected_choices = {};
+			this.selection.clear();
 			this.updateFilters();
 		}
 
