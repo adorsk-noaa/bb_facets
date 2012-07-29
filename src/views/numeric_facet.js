@@ -53,7 +53,7 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
             // Save shortcuts to text inputs.
             this.selectionInputs = {};
             _.each(['min', 'max'], function(minmax){
-                var $input = $(_s.sprintf('.selection-inputs input[name="%s"]', minmax));
+                var $input = $(_s.sprintf('.selection-inputs input[name="%s"]', minmax), this.el);
                 this.selectionInputs[minmax] = $input;
             }, this);
 
@@ -77,17 +77,22 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
             this.selection.set(minmax, val);
         },
 
-        onSelectionChange: function(){
+        onSelectionChange: function(model, changes){
             // Update text widgets.
             _.each(['min', 'max'], function(minmax){
-                var val = this.selection.get(minmax);
-                this.selectionInputs[minmax].val(val);
+                if (changes.changes && changes.changes.hasOwnProperty(minmax)){
+                    var val = this.selection.get(minmax);
+                    this.selectionInputs[minmax].val(val);
+                }
             }, this);
+
+            // Update reset button.
+			this.updateResetButton();
 
             // Update filters.
 			this.updateFilters();		
-        },
 
+        },
 
 		onRangeChange: function(){
             var format = this.model.get('format') || "%.1f";
@@ -185,8 +190,8 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
 
 		getSelection: function(){
 			return {
-				min: this.model.get('min'),
-				max : this.model.get('max')
+				min: this.selection.get('min'),
+				max : this.selection.get('max')
 			};
 		},
 
@@ -201,7 +206,19 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
             this.onSelectionChange();
             this.onRangeChange();
             this.slider.trigger('ready');
-        }
+        },
+
+		updateResetButton: function(){
+			// If anything was selected, show reset button.
+            var visibility = 'hidden';
+            _.each(['min', 'max'], function(minmax){
+                var val = this.selection.get(minmax);
+                if (val != null && val != ""){
+                    visibility = 'visible';
+                }
+            }, this);
+            $('.facet-reset-button', this.el).css('visibility',  visibility);
+		},
 
 	});
 

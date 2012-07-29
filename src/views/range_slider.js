@@ -85,21 +85,28 @@ function($, Backbone, _, ui, _s, template){
 
 		onSlideStop: function(){
 			slider_values = this.$slider.slider("values");
-            // Don't change if slider is at bounds
-            // and existing values exceed bounds.
-            if ( slider_values[0] == this.range.get('min')
-                    && this.selection.get('min') < slider_values[0] ){
-                slider_values[0] = this.selection.get('min');
+
+            var set_obj = {};
+            // Don't change if slider is at range bounds
+            // and currently selected values exceed bounds or are null.
+            if ( ! (slider_values[0] == this.range.get('min')
+                        && (this.selection.get('min') < this.range.get('min') 
+                            || this.selection.get('min') == null
+                           )
+                   )
+               ){
+                set_obj['min'] = slider_values[0];
             }
-            if ( slider_values[1] == this.range.get('max')
-                    && this.selection.get('max') > slider_values[1] ){
-                slider_values[1] = this.selection.get('max');
+            if ( ! (slider_values[1] == this.range.get('max')
+                        && (this.selection.get('max') > this.range.get('max') 
+                            || this.selection.get('max') == null
+                           )
+                   )
+               ){
+                set_obj['max'] = slider_values[1];
             }
 
-			this.selection.set({
-                min: slider_values[0], 
-                max: slider_values[1]
-            });
+			this.selection.set(set_obj);
         },
 
 		onRangeChange: function(){
