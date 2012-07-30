@@ -36,6 +36,7 @@ function($, Backbone, _, ui, _s, FacetView, uiExtras){
             this.renderChoices();
 
             // Listen for events.
+            this.model.on('change:selection', this.onSelectionChange, this);
             this.model.on('change:choices', this.renderChoices, this);
         },
 
@@ -44,15 +45,9 @@ function($, Backbone, _, ui, _s, FacetView, uiExtras){
             this.$selectSlider.selectSlider('option', {'choices': preparedChoices});
 
 			// Re-select choice if still present.
-			if (this.selected_value){
-                this.$selectSlider.selectSlider('value', this.selected_value);
-            }
-
-            // Otherwise select the first choice.
-            else{
-                if (preparedChoices.length > 0){
-                    this.$selectSlider.selectSlider('value', preparedChoices[0].value);
-                }
+            var selection = this.model.get('selection');
+			if (selection != null){
+                this.$selectSlider.selectSlider('value', selection);
             }
         },
 
@@ -76,10 +71,18 @@ function($, Backbone, _, ui, _s, FacetView, uiExtras){
             return preparedChoices;
         },
 
-		onSliderChange: function(event){
-            this.selected_value = this.$selectSlider.selectSlider('option', 'value');
-			this.updateFilters();
+		onSliderChange: function(){
+            this.model.set('selection', this.$selectSlider.selectSlider('option', 'value'));
 		},
+
+        onSelectionChange: function(){
+			// Re-select choice if still present.
+            var selection = this.model.get('selection');
+			if (selection != null){
+                this.$selectSlider.selectSlider('value', selection);
+            }
+            this.updateFilters();
+        },
 
 		getSelection: function(){
 			var selection = this.$selectSlider.selectSlider('option', 'value');
