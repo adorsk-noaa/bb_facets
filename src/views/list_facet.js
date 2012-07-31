@@ -96,7 +96,7 @@ function($, Backbone, _, ui, _s, FacetView, choices_template){
 			var total = this.model.get('total');
 
 			_.each(choices, function(choice){
-				var scale = choice['count']/total;
+				var scale = (total == 0) ? 0 : choice['count']/total;
 				choice_count_images.push(_s.sprintf("<span class='scalebar-container'><span class='scalebar-fill' style='display: block; width:%s%%;'>&nbsp;</span></span>", Math.round(scale * 100)));
 			});
 			return choice_count_images;
