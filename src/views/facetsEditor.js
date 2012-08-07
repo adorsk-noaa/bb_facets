@@ -108,7 +108,7 @@ function($, Backbone, _, _s, ui, Menus, Util, FacetCollectionView, SummaryBarVie
 
             // Create menu with 'Add Facet..' menu item.
             var menu = {
-                items: [{content: 'Add Facet...', items: menuItems}]
+                items: [{content: 'Add Facet', items: menuItems}]
             };
 
             // Create menu model.
@@ -210,45 +210,12 @@ function($, Backbone, _, _s, ui, Menus, Util, FacetCollectionView, SummaryBarVie
             var $table = $('.facets-editor-table', this.el);
             Util.util.fillParent($table);
             this.resizeVerticalTab($('.configuration-editor .tab', this.el)); 
-            //this.resizeRightColumn();
         },
 
         resizeVerticalTab: function($vt){
             var $rc = $('.rotate-container', $vt);
             $rc.css('width', $rc.parent().height());
             $rc.css('height', $rc.parent().width());
-        },
-
-        resizeRightColumn: function(){
-            // Get inner container.
-            var $inner = $('.right-column > .inner', this.el);
-
-            // Get heights of inner container, summary bar, and base facet sections.
-            var heights = {};
-            var selectors = {
-                inner: '.right-column > .inner', 
-                summaryBar: '.summary-bar-section', 
-                baseFacets: '.base-facets-section'
-            }
-            _.each(selectors, function(selector, key){
-                var $el = $(selector, this.el);
-                heights[key] = {
-                    innerHeight: $el.innerHeight(),
-                    height: $el.height(),
-                    outerHeight: $el.outerHeight(true)
-                };
-            });
-
-            // Calculate the vertical margin for a section.
-            var verticalMargin = heights.summaryBar.outerHeight - heights.summaryBar.height;
-
-            // Set the height of the primary facets section to be
-            // inner - (summaryBar + baseFacets + margin)
-            var primaryFacetsH = heights.inner.height - (heights.summaryBar.outerHeight + heights.baseFacets.outerHeight + verticalMargin);
-            console.log(heights, verticalMargin);
-            $('.primary-facets-section', this.el).height(primaryFacetsH);
-            console.log(primaryFacetsH);
-
         }
 
 	});

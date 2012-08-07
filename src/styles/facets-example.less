@@ -56,6 +56,19 @@
           cursor: move;
           padding: @padding_tighter;
 
+          > .close-button{
+              float: left;
+              cursor: pointer;
+              margin: 1px;
+              width: 16px;
+              height: 16px;
+              background-image: url("images/buttons.png");
+              @top_offset: -0px;
+              @hover_offset: -16px;
+              background-position: 0px @top_offset;
+              &:hover { background-position: @hover_offset @top_offset; }
+          }
+
           > .title {
               padding: @padding_tighter;
               font-weight: bold;

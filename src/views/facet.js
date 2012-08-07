@@ -24,6 +24,11 @@ function($, Backbone, _, _s, template){
 			var html = _.template(template, {model: this.model});
 			$(this.el).html(html);
 
+            // If facet can be closed, add close button.
+            if (! this.model.get('noClose')){
+                $('.facet-header', this.el).prepend('<span class="close-button"></span>');
+            }
+
             // If facet has info, add info control.
             var info = this.model.get('info');
             if (info){
