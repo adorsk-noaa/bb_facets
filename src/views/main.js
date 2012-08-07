@@ -4,16 +4,18 @@ define([
 	"./numeric_facet",
 	"./facet_collection",
 	"./range_slider",
-	"./time_slider_facet"
+	"./time_slider_facet",
+	"./facetsEditor"
 ], 
-function(_, ListFacetView, NumericFacetView, FacetCollectionView, RangeSliderView, TimeSliderFacetView){
+function(_, ListFacetView, NumericFacetView, FacetCollectionView, RangeSliderView, TimeSliderFacetView, FacetsEditorView){
 
 	views = {
 		ListFacetView: ListFacetView,
 		NumericFacetView: NumericFacetView,
 		FacetCollectionView: FacetCollectionView,
 		RangeSliderView: RangeSliderView,
-        TimeSliderFacetView: TimeSliderFacetView
+        TimeSliderFacetView: TimeSliderFacetView,
+        FacetsEditorView: FacetsEditorView
 	};
 
 	return views;

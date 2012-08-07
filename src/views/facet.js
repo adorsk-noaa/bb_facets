@@ -10,6 +10,10 @@ function($, Backbone, _, _s, template){
 
 	var FacetView = Backbone.View.extend({
 
+        events: {
+            'click .close-button' : 'remove'
+        },
+
 		initialize: function(){
             $(this.el).addClass("facet");
             $(this.el).attr("id", _s.sprintf("facet-%s", this.model.cid));
@@ -64,7 +68,13 @@ function($, Backbone, _, _s, template){
 					event.target.style.width = "auto"; // don't force the width
 				}
 			});
-		}
+		},
+
+        remove: function(){
+            Backbone.View.prototype.remove.apply(this, arguments);
+            this.model.trigger('destroy', this.model, this.model.collection);
+            this.off()
+        }
 
 	});
 

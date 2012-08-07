@@ -12,10 +12,10 @@ function($, Backbone, _, ui, _s, FacetView, choices_template){
 
 	var ListFacetView = FacetView.extend({
 
-		events: {
+		events: _.extend({}, FacetView.prototype.events, {
 			"change .facet-choice": "onChoiceWidgetChange",
 			"click .facet-reset-button": "resetFilters"
-		},
+		}),
 
 		initialize: function(opts){
 
@@ -30,9 +30,6 @@ function($, Backbone, _, ui, _s, FacetView, choices_template){
 
 			FacetView.prototype.initialize.call(this, arguments);
             $(this.el).addClass("list-facet");
-
-			// For keeping track of selected choices.
-			this.selected_choices = {};
 
 			// Re-render when choices or total or selection changes.
 			this.model.on('change:choices change:total', this.renderChoices, this);
@@ -57,6 +54,9 @@ function($, Backbone, _, ui, _s, FacetView, choices_template){
             // Add choices container to body.
             var $choices = $('<div class="facet-choices"></div>');
             $choices.appendTo($('.facet-body > .inner', this.el));
+
+            // Render initial choices.
+            this.renderChoices();
         },
 		
 		// Default choice formatter.
@@ -128,7 +128,6 @@ function($, Backbone, _, ui, _s, FacetView, choices_template){
 
             this.onSelectionChange();
 			this.updateResetButton();
-
 		},
 
 		getSelection: function(){

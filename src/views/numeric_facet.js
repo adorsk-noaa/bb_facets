@@ -12,10 +12,10 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
 
 	var NumericFacetView = FacetView.extend({
 
-		events: {
+		events: _.extend({}, FacetView.prototype.events, {
 			"click .facet-reset-button": "resetFilters",
             "change .selection-input": "onSelectionInputChange"
-		},
+		}),
 
 		initialize: function(){
 			FacetView.prototype.initialize.call(this, arguments);
