@@ -21,7 +21,7 @@ function($, Backbone, _, _s, ui, Menus, Util, FacetCollectionView, SummaryBarVie
             $(this.el).addClass('facets-editor');
 
             // Initialize sub-collections if not provided.
-            _.each(['quantity_fields', 'base_facets', 'primary_facets'], function(attr){
+            _.each(['quantity_fields', 'base_facets', 'primary_facets', 'predefined_facets'], function(attr){
                 var collection = this.model.get(attr);
                 if (! collection){
                     collection = new Backbone.Collection();
@@ -30,7 +30,7 @@ function($, Backbone, _, _s, ui, Menus, Util, FacetCollectionView, SummaryBarVie
             }, this);
 
             // Initialize sub-models if not provided.
-            _.each(['summary_bar', 'predefinedFacets'], function(attr){
+            _.each(['summary_bar'], function(attr){
                 var subModel = this.model.get(attr);
                 if (! subModel){
                     this.model.set(attr, new Backbone.Model());
@@ -89,17 +89,19 @@ function($, Backbone, _, _s, ui, Menus, Util, FacetCollectionView, SummaryBarVie
 
             // Format menu items from predefined facets.
             var menuItems = [];
-            _.each(this.model.get('predefinedFacets').models, function(facetModel){
-                var $content = $('<span>' + facetModel.get('label') + '</span>');
+            _.each(this.model.get('predefined_facets').models, function(facetDef){
+                var $content = $('<span>' + facetDef.get('facetDef').label + '</span>');
                 // Assign create facet function to content.
                 $content.on('click', function(){
-                    (function(m){
-                        addPrimaryFacet(m);
-                    })(facetModel);
+                    (function(def){
+                        // Create model from definition.
+                        var facetModel = _this.createFacetModelFromDef(def.get('facetDef'));
+                        addPrimaryFacet(facetModel);
+                    })(facetDef);
                 });
                 var menuItem = {
                     content: $content,
-                    id: facetModel.cid
+                    id: facetDef.cid
                 };
 
                 // Add menu item to list.
@@ -136,6 +138,17 @@ function($, Backbone, _, _s, ui, Menus, Util, FacetCollectionView, SummaryBarVie
             return choices;
         },
 
+        createFacetModelFromDef: function(facetDef){
+            var facetModel = new Backbone.Model(_.extend({
+            }, facetDef));
+
+            // Set id if none was given.
+            if (! facetModel.get('id')){
+                facetModel.set('id', facetModel.cid);
+            }
+
+            return facetModel;
+        },
 
         toggleConfigurationEditor: function(){
             var $editorContainer = $('.configuration-editor > .inner', this.el);

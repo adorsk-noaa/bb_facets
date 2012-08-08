@@ -24,8 +24,15 @@ function($, Backbone, _, ui, facetViewClasses, template){
             }, this);
 
             this.model.on('destroy', function(model, collection){
+                // Get the facet view.
+                var facetView = this.registry[model.id];
+
+                // Trigger removeFacetView event.
+                this.trigger('removeFacetView', facetView);
+
                 // Unregister the facet.
                 delete this.registry[model.id];
+
             }, this);
 		},
         
@@ -53,10 +60,8 @@ function($, Backbone, _, ui, facetViewClasses, template){
             var facetView = this.createFacetView(facetModel);
             if (facetView){
                 // Add to registry.
-                this.registry[facetModel.id] = {
-                    model: facetModel,
-                    view: facetView
-                };
+                this.registry[facetModel.id] = facetView;
+
                 // Add facet view.
                 this.addFacetView(facetView);
             }
@@ -75,6 +80,9 @@ function($, Backbone, _, ui, facetViewClasses, template){
 			$(".facet-widgets", $(this.el)).append(facetView.el);
 			facetView.render();
 			$('.facet-widgets', this.el).sortable('refresh');
+
+            // Trigger addFacetView event.
+            this.trigger('addFacetView', facetView);
 		}
 		
 	});

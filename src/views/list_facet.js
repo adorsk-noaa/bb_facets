@@ -61,8 +61,8 @@ function($, Backbone, _, ui, _s, FacetView, choices_template){
 		
 		// Default choice formatter.
 		formatChoices: function(choices){
-			if (choices.length == 0){
-				return choices;
+			if (! choices || choices.length == 0){
+				return [];
 			}
 
 			var formatted_choices = [];
@@ -124,7 +124,11 @@ function($, Backbone, _, ui, _s, FacetView, choices_template){
 			});
 
 			// Update choices count.
-			$('.choices-count', $(this.el)).html(choices.length);
+            var choiceCount = 0;
+            if (choices && choices.length){
+                choiceCount = choices.length;
+            }
+			$('.choices-count', $(this.el)).html(choiceCount);
 
             this.onSelectionChange();
 			this.updateResetButton();
