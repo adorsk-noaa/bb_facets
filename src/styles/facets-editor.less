@@ -140,9 +140,10 @@
             > .inner{
                 position: absolute;
                 top: 0;
-                left: 5px;
+                left: 0;
                 bottom: 0;
                 right: 0;
+                padding: 0 5px;
                 overflow-y: scroll;
                 overflow-x: hidden;
 
@@ -150,8 +151,12 @@
                     .rounded_corners(5px);
                     background-color: @chrome_secondary;
                     position: relative;
-                    margin: 5px;
+                    margin-bottom: 5px;
                     padding: 2px;
+
+                    &:last-child {
+                        margin-bottom: 0;
+                    }
 
                     > .header {
                         margin: 0px;
