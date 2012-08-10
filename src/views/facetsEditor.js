@@ -112,7 +112,7 @@ function($, Backbone, _, _s, ui, Menus, Util, FacetCollectionView, SummaryBarVie
                 });
                 var menuItem = {
                     content: $content,
-                    id: facetDef.cid
+                    id: facetDef.id
                 };
 
                 // Add menu item to list.
@@ -141,7 +141,7 @@ function($, Backbone, _, _s, ui, Menus, Util, FacetCollectionView, SummaryBarVie
             var choices = [];
             _.each(this.model.get('quantity_fields').models, function(model){
                 choices.push({
-                    value: model.cid,
+                    value: model.id,
                     label: model.get('label'),
                     info: model.get('info')
                 });

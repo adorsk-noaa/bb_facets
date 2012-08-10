@@ -37,7 +37,11 @@ function($, Backbone, _, _s, ui, Util){
                 return;
             }
 
-            var format = this.model.get('quantity_field').get('format') || "%s";
+            var format = '%s';
+            var qField = this.model.get('quantity_field');
+            if (qField){
+                format = qField.get('format');
+            }
 
             var formatted_selected = this.formatter(format, data.selected);
             var formatted_total = this.formatter(format, data.total);
