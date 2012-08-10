@@ -29,31 +29,42 @@ function($, Backbone, _, _s, ui, Menus, Util, FacetCollectionView, SummaryBarVie
                 }
             }, this);
 
-            // Initialize sub-models if not provided.
-            _.each(['summary_bar'], function(attr){
-                var subModel = this.model.get(attr);
-                if (! subModel){
-                    this.model.set(attr, new Backbone.Model());
-                }
-            }, this);
+            // Initialize summary bar model if not provided.
+            var summaryBarModel = this.model.get('summary_bar');
+            if (! summaryBarModel){
+                this.model.set('summary_bar', new Backbone.Model());
+            }
+
+            // Initialize qfield selector model if not provided.
+            // @TODO: should probably encapsulate this as
+            // 'this.model.get('selected_quantity_field') later...
+            var qFieldSelectModel = this.model.get('qfield_select');
+            if (! qFieldSelectModel){
+                // Create choices.
+                var choices = this.formatQFieldChoices();
+                // Create model.
+                qFieldSelectModel = new Backbone.Model({
+                    choices: choices
+                });
+                this.model.set('qfield_select', qFieldSelectModel);
+            }
 
             // Registry for sub-views.
             this.subViews = {};
 
             this.initialRender();
+
+            // Listen for ready events.
+            this.on('ready', this.onReady, this);
 		},
 
         initialRender: function(){
             var html = _.template(template, {model: this.model});
             $(this.el).html(html);
 
-            // Render quantity field selector.
-            var choices = this.formatQFieldChoices();
             this.qFieldSelect = new Util.views.InfoSelectView({
                 el : $('.quantity-field-selector', this.el),
-                model: new Backbone.Model({
-                    "choices": choices
-                })
+                model: this.model.get('qfield_select')
             });
 
             // Render summary bar.
@@ -229,6 +240,12 @@ function($, Backbone, _, _s, ui, Menus, Util, FacetCollectionView, SummaryBarVie
             var $rc = $('.rotate-container', $vt);
             $rc.css('width', $rc.parent().height());
             $rc.css('height', $rc.parent().width());
+        },
+
+        onReady: function(){
+            _.each(this.subViews, function(subView){
+                subView.trigger('ready');
+            });
         }
 
 	});

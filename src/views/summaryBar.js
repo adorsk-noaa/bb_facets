@@ -20,6 +20,9 @@ function($, Backbone, _, _s, ui, Util){
 
             // Trigger update when model data changes.
             this.model.on('change:data', this.onDataChange, this);
+
+            // Listen for ready events.
+            this.on('ready', this.onReady, this);
         },
 
         initialRender: function(){
@@ -27,13 +30,14 @@ function($, Backbone, _, _s, ui, Util){
         },
 
         onDataChange: function(){
-            var format = this.model.get('quantity_field').get('format') || "%s";
             var data = this.model.get('data');
 
             // Do nothing if data is incomplete.
-            if (data.selected == null || data.total == null){
+            if (! data || data.selected == null || data.total == null){
                 return;
             }
+
+            var format = this.model.get('quantity_field').get('format') || "%s";
 
             var formatted_selected = this.formatter(format, data.selected);
             var formatted_total = this.formatter(format, data.total);
@@ -51,7 +55,13 @@ function($, Backbone, _, _s, ui, Util){
 
             this.trigger('change:size');
 
+        },
+
+        // Update display on ready.
+        onReady: function(){
+            this.onDataChange();
         }
+
 
 	});
 
