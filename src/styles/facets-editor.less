@@ -32,167 +32,205 @@
 @padding_looser: 15px;
 
 .facets-editor{
+    @w: 300px;
 
-    @tab_h: 40px;
+    @tab_w: 40px;
     @tab_bw: 1px;
     @tab_corner_radius: 7px;
+
+    @panel_w: @w - @tab_w - @padding_normal;
+    @editor_body_w: 200px;
+    @facets_body_w: @w - @tab_w;
 
     position: relative;
     height: 100%;
     width: 100%;
 
-    > .table {
-        border-spacing: 0;
-        border-collapse: collapse;
+    > .inner{
+        position: relative;
         width: 100%;
         height: 100%;
 
-        > .row {
+        > .tab{
+            .rounded_corners_left(@tab_corner_radius);
+            position: absolute;
+            top: 0;
             height: 100%;
+            width: @tab_w;
+            background: @chrome_primary;
+
+            > .title-container{
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: @tab_w;				
+                height: 100%;
+                text-align: center;
+
+                > .rotate-container{
+                    position: absolute;
+                    left: 0;
+                    bottom: 0;
+                    overflow: hidden;
+
+                    > .title {
+                        .button;
+                        display: inline-block;
+                        .rounded_corners(@tab_corner_radius);
+                        margin: @padding_tight;
+                        font-size: 18px;
+                        padding: 1px @padding_looser;
+
+                        button.toggle {
+                            .button;
+                        }
+                    }
+                }
+            }
         }
 
-        .middle-row .left-column {
-            width: @tab_h;
+        > .body{
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: @tab_w;
+            bottom: 0;
+            overflow-x: scroll;
+
+            > .table {
+                display: table;
+                height: 100%;
+                width: 100%;
+
+                > .row { 
+                    display: table-row; 
+                    > .cell { 
+                        display: table-cell; 
+                        height: 100%;
+                        > .inner{
+                            height: 100%;
+                            width: 100%;
+                            position: relative;
+                            overflow: hidden;
+                        }
+                    }
+                }
+            }
+
+            .configuration-editor-cell {
+                min-width: 0;
+                max-width: @editor_body_w + @padding_normal;
+            }
 
             .configuration-editor {
-                height: 100%;
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: @padding_normal;
+                width: @editor_body_w;
 
                 > .inner{
-                    @body_w: 200px;
-                    min-width: @tab_h;
-                    max-width: @tab_h + @body_w + @tab_bw + 2 * @padding_normal;
-                    width: @tab_h;
+                    position: relative;
+                    width: 100%;
                     height: 100%;
                     overflow: hidden;
-                    position: relative;
 
-                    > .tab{
-                        .rounded_corners_left(@tab_corner_radius);
+
+                    > .body-container{
                         position: absolute;
-                        left: 0;
-                        right: 0;
-                        top: 0;
-                        bottom: 0;
-                        background: @chrome_primary;
+                        left: @tab_w;
+                        right: @tab_bw;
+                        top: @tab_bw;
+                        bottom: @tab_bw;
+                        padding-left: 5px;
+                        font-size: 14px;
+                        overflow: hidden;
 
-                        > .title-container{
+                        > .body{
                             position: absolute;
                             top: 0;
                             left: 0;
-                            width: @tab_h;				
+                            width: @editor_body_w + 2 * @padding_normal;
                             height: 100%;
-                            text-align: center;
+                            background: white;
+                            overflow-y: auto;
 
-                            > .rotate-container{
-                                position: absolute;
-                                left: 0;
-                                bottom: 0;
-                                overflow: hidden;
+                            > .inner{
+                                padding: @padding_normal;
+                            }
+                        }
+                    }
+                }
+            }
 
-                                > .title {
-                                    .button;
-                                    display: inline-block;
-                                    .rounded_corners(@tab_corner_radius);
-                                    margin: @padding_tight;
-                                    font-size: 18px;
-                                    padding: 1px @padding_looser;
+            .facet-sections-cell{
+                width: @facets_body_w;
+            }
 
-                                    button.toggle {
-                                        .button;
+            .facet-sections{
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: @facets_body_w;
+                height: 100%;
+
+                > .inner{
+                    position: relative;
+                    height: 100%;
+                    padding: 0 5px;
+                    overflow-y: scroll;
+                    overflow-x: hidden;
+
+                    > .summary-bar-section{
+                        .summary-bar {
+                            > .inner {
+                                .rounded_corners(@padding_normal);
+                                margin: 0 5px; 
+                                padding: 5px 5px;
+                                .text {
+                                    .selected {
+                                        font-weight: bold;
                                     }
                                 }
                             }
                         }
+                    }
 
-                        > .body-container{
-                            position: absolute;
-                            left: @tab_h;
-                            right: @tab_bw;
-                            top: @tab_bw;
-                            bottom: @tab_bw;
-                            padding-left: 5px;
-                            font-size: 14px;
-                            overflow: hidden;
-
-                            > .body{
-                                position: absolute;
-                                top: 0;
-                                left: 0;
-                                width: @body_w + 2 * @padding_normal;
-                                height: 100%;
-                                background: white;
-                                overflow-y: auto;
-
-                                > .inner{
-                                    padding: @padding_normal;
-                                }
-                            }
+                    > .primary-facets-section{
+                        > .body{
+                            position: relative;
                         }
                     }
+
                 }
             }
-        }
 
-        .right-column.cell{
-            vertical-align: top;
-            position: relative;
 
-            > .inner{
-                position: absolute;
-                top: 0;
-                left: 0;
-                bottom: 0;
-                right: 0;
-                padding: 0 5px;
-                overflow-y: scroll;
-                overflow-x: hidden;
+            .section{
+                .rounded_corners(5px);
+                background-color: @chrome_secondary;
+                position: relative;
+                margin-bottom: 5px;
+                padding: 2px;
 
-                > .section{
-                    .rounded_corners(5px);
-                    background-color: @chrome_secondary;
-                    position: relative;
-                    margin-bottom: 5px;
-                    padding: 2px;
-
-                    &:last-child {
-                        margin-bottom: 0;
-                    }
-
-                    > .header {
-                        margin: 0px;
-                        padding: 5px;
-                        font-weight: normal;
-                        font-size: 16px;
-                    }
-
-                    > .body{
-                        background-color: white;
-                        padding: 1px;
-                    }
+                &:last-child {
+                    margin-bottom: 0;
                 }
 
-                > .summary-bar-section{
-                    .summary-bar {
-                        > .inner {
-                            .rounded_corners(@padding_normal);
-                            margin: 0 5px; 
-                            padding: 5px 5px;
-                            .text {
-                                .selected {
-                                    font-weight: bold;
-                                }
-                            }
-                        }
-                    }
+                > .header {
+                    margin: 0px;
+                    padding: 5px;
+                    font-weight: normal;
+                    font-size: 16px;
                 }
 
-                > .primary-facets-section{
-                    > .body{
-                        position: relative;
-                    }
+                > .body{
+                    background-color: white;
+                    padding: 1px;
                 }
-        
             }
+
+
         }
     }
 }

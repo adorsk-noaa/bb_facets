@@ -14,7 +14,7 @@ function($, Backbone, _, _s, ui, Menus, Util, FacetCollectionView, SummaryBarVie
 
 	var FacetsEditorView = Backbone.View.extend({
         events: {
-            'click .configuration-editor .title': 'toggleConfigurationEditor',
+            'click .tab .title': 'toggleConfigurationEditor',
         },
 
 		initialize: function(){
@@ -162,69 +162,65 @@ function($, Backbone, _, _s, ui, Menus, Util, FacetCollectionView, SummaryBarVie
         },
 
         toggleConfigurationEditor: function(){
-            var $editorContainer = $('.configuration-editor > .inner', this.el);
-            var $table = $('.facets-editor-table', this.el);
-            if (! $editorContainer.hasClass('changing')){
-                this.expandContractTab({
-                    expand: ! $editorContainer.hasClass('expanded'),
-                    tab_container: $editorContainer,
-                    table: $table,
-                    dimension: 'width'
-                });
-            }
-        },
+            var $tab = $('.tab', this.el);
+            var $editorCell = $('.configuration-editor-cell', this.el);
+            var $table = $('> .inner > .body > .table', this.el);
 
-        expandContractTab: function(opts){
-            var expand = opts.expand;
-            var $tc = opts.tab_container;
-            var $table = opts.table;
-            var dim = opts.dimension;
+            // Do nothing if currently changing.
+            if ($editorCell.hasClass('changing')){
+                return;
+            }
+
 
             // Calculate how much to change dimension.
-            var delta = parseInt($tc.css('max' + _s.capitalize(dim)), 10) - parseInt($tc.css('min' + _s.capitalize(dim)), 10);
-            if (! expand){
+            var delta = parseInt($editorCell.css('maxWidth'), 10) - parseInt($editorCell.css('minWidth'), 10);
+            // Determine whether to expand or contract.
+            var expanded = $editorCell.hasClass('expanded');
+            if (expanded){
                 delta = -1 * delta;
             }
 
-            // Animate field container dimension.
-            $tc.addClass('changing');
 
             // Toggle button text
-            var button_text = ($('button.toggle', $tc).html() == '\u25B2') ? '\u25BC' : '\u25B2';
-            $('button.toggle', $tc).html(button_text);
+            var button_text = ($('button.toggle', $tab).html() == '\u25B2') ? '\u25BC' : '\u25B2';
+            $('button.toggle', $tab).html(button_text);
 
             // Execute animations and save deferreds.
             var deferreds = [];
 
-            // first animate the tab container.
-            var tc_dim_opts = {};
-            tc_dim_opts[dim] = parseInt($tc.css(dim),10) + delta;
-            var tcDeferred = $tc.animate(
-                    tc_dim_opts,
+            // Animate field container dimension.
+
+            $editorCell.addClass('changing');
+
+            var deferreds = [];
+
+            var cellDeferred = $editorCell.animate(
+                    {
+                        width: $editorCell.width() + delta
+                    },
                     {
                         complete: function(){
-                            $tc.removeClass('changing');
+                            $editorCell.removeClass('changing');
 
-                            if (expand){
-                                $tc.addClass('expanded')
+                            if (! expanded){
+                                $editorCell.addClass('expanded')
                             }
                             else{
-                                $tc.removeClass('expanded');
-                                Util.util.fillParent($table);
+                                $editorCell.removeClass('expanded');
                             }
                         }
                     }
                     ).promise();
-            deferreds.push(tcDeferred);
 
-            // Animate cell dimension.
-            var parentDeferred = $tc.parent().animate(tc_dim_opts).promise();
-            deferreds.push(parentDeferred);
+            deferreds.push(cellDeferred);
 
             // Animate table dimension.
-            var table_dim_opts = {};
-            table_dim_opts[dim] = parseInt($table.css(dim),10) + delta;
-            var tableDeferred = $table.animate(table_dim_opts).promise();
+            var tableDeferred = $table.animate(
+                    {
+                        width: $table.width() + delta
+                    }
+                    ).promise();
+            deferreds.push(tableDeferred);
 
             // Return combined deferred.
             return $.when.apply($, deferreds);
@@ -233,7 +229,7 @@ function($, Backbone, _, _s, ui, Menus, Util, FacetCollectionView, SummaryBarVie
         resize: function(){
             var $table = $('.facets-editor-table', this.el);
             Util.util.fillParent($table);
-            this.resizeVerticalTab($('.configuration-editor .tab', this.el)); 
+            this.resizeVerticalTab($('.tab', this.el)); 
         },
 
         resizeVerticalTab: function($vt){
