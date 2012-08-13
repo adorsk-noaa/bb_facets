@@ -51,7 +51,36 @@
         width: 100%;
         height: 100%;
 
-        > .tab{
+        > .table {
+            display: table;
+            height: 100%;
+            width: 100%;
+
+            > .row { 
+                display: table-row; 
+                > .cell { 
+                    display: table-cell; 
+                    height: 100%;
+                    > .inner{
+                        height: 100%;
+                        width: 100%;
+                        position: relative;
+                        overflow: hidden;
+                    }
+                }
+            }
+        }
+
+        .tab-cell {
+            width: @tab_w;
+        }
+
+        .configuration-editor-cell {
+            min-width: 0;
+            max-width: @editor_body_w + @padding_normal;
+        }
+
+        .tab{
             .rounded_corners_left(@tab_corner_radius);
             position: absolute;
             top: 0;
@@ -89,149 +118,116 @@
             }
         }
 
-        > .body{
+
+        .configuration-editor {
             position: absolute;
             top: 0;
-            right: 0;
-            left: @tab_w;
             bottom: 0;
-            overflow-x: scroll;
+            left: @padding_normal;
+            width: @editor_body_w;
 
-            > .table {
-                display: table;
-                height: 100%;
+            > .inner{
+                position: relative;
                 width: 100%;
+                height: 100%;
+                overflow: hidden;
 
-                > .row { 
-                    display: table-row; 
-                    > .cell { 
-                        display: table-cell; 
-                        height: 100%;
-                        > .inner{
-                            height: 100%;
-                            width: 100%;
-                            position: relative;
-                            overflow: hidden;
-                        }
-                    }
-                }
-            }
 
-            .configuration-editor-cell {
-                min-width: 0;
-                max-width: @editor_body_w + @padding_normal;
-            }
-
-            .configuration-editor {
-                position: absolute;
-                top: 0;
-                bottom: 0;
-                left: @padding_normal;
-                width: @editor_body_w;
-
-                > .inner{
-                    position: relative;
-                    width: 100%;
-                    height: 100%;
+                > .body-container{
+                    position: absolute;
+                    left: @tab_w;
+                    right: @tab_bw;
+                    top: @tab_bw;
+                    bottom: @tab_bw;
+                    padding-left: 5px;
+                    font-size: 14px;
                     overflow: hidden;
 
-
-                    > .body-container{
+                    > .body{
                         position: absolute;
-                        left: @tab_w;
-                        right: @tab_bw;
-                        top: @tab_bw;
-                        bottom: @tab_bw;
-                        padding-left: 5px;
-                        font-size: 14px;
-                        overflow: hidden;
+                        top: 0;
+                        left: 0;
+                        width: @editor_body_w + 2 * @padding_normal;
+                        height: 100%;
+                        background: white;
+                        overflow-y: auto;
 
-                        > .body{
-                            position: absolute;
-                            top: 0;
-                            left: 0;
-                            width: @editor_body_w + 2 * @padding_normal;
-                            height: 100%;
-                            background: white;
-                            overflow-y: auto;
-
-                            > .inner{
-                                padding: @padding_normal;
-                            }
+                        > .inner{
+                            padding: @padding_normal;
                         }
                     }
                 }
             }
+        }
 
-            .facet-sections-cell{
-                width: @facets_body_w;
-            }
+        .facet-sections-cell{
+            width: @facets_body_w;
+        }
 
-            .facet-sections{
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: @facets_body_w;
+        .facet-sections{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: @facets_body_w;
+            height: 100%;
+
+            > .inner{
+                position: relative;
                 height: 100%;
+                padding: 0 5px;
+                overflow-y: scroll;
+                overflow-x: hidden;
 
-                > .inner{
-                    position: relative;
-                    height: 100%;
-                    padding: 0 5px;
-                    overflow-y: scroll;
-                    overflow-x: hidden;
-
-                    > .summary-bar-section{
-                        .summary-bar {
-                            > .inner {
-                                .rounded_corners(@padding_normal);
-                                margin: 0 5px; 
-                                padding: 5px 5px;
-                                .text {
-                                    .selected {
-                                        font-weight: bold;
-                                    }
+                > .summary-bar-section{
+                    .summary-bar {
+                        > .inner {
+                            .rounded_corners(@padding_normal);
+                            margin: 0 5px; 
+                            padding: 5px 5px;
+                            .text {
+                                .selected {
+                                    font-weight: bold;
                                 }
                             }
                         }
                     }
+                }
 
-                    > .primary-facets-section{
-                        > .body{
-                            position: relative;
-                        }
+                > .primary-facets-section{
+                    > .body{
+                        position: relative;
                     }
-
                 }
+
             }
-
-
-            .section{
-                .rounded_corners(5px);
-                background-color: @chrome_secondary;
-                position: relative;
-                margin-bottom: 5px;
-                padding: 2px;
-
-                &:last-child {
-                    margin-bottom: 0;
-                }
-
-                > .header {
-                    margin: 0px;
-                    padding: 5px;
-                    font-weight: normal;
-                    font-size: 16px;
-                }
-
-                > .body{
-                    background-color: white;
-                    padding: 2px;
-                }
-            }
-
-
         }
+
+
+        .section{
+            .rounded_corners(5px);
+            background-color: @chrome_secondary;
+            position: relative;
+            margin-bottom: 5px;
+            padding: 2px;
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+
+            > .header {
+                margin: 0px;
+                padding: 5px;
+                font-weight: normal;
+                font-size: 16px;
+            }
+
+            > .body{
+                background-color: white;
+                padding: 2px;
+            }
+        }
+
+
     }
 }
 
