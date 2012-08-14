@@ -56,6 +56,9 @@ function($, Backbone, _, _s, ui, Menus, Util, FacetCollectionView, SummaryBarVie
 
             // Listen for ready events.
             this.on('ready', this.onReady, this);
+
+            // Listen for resize events.
+            this.on('resize', this.resize, this);
 		},
 
         initialRender: function(){
