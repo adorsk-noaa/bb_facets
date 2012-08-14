@@ -21,7 +21,7 @@ function($, Backbone, _, _s, ui, Menus, Util, FacetCollectionView, SummaryBarVie
             $(this.el).addClass('facets-editor');
 
             // Initialize sub-collections if not provided.
-            _.each(['quantity_fields', 'base_facets', 'primary_facets', 'predefined_facets'], function(attr){
+            _.each(['quantity_fields', 'facets', 'predefined_facets'], function(attr){
                 var collection = this.model.get(attr);
                 if (! collection){
                     collection = new Backbone.Collection();
@@ -73,16 +73,14 @@ function($, Backbone, _, _s, ui, Menus, Util, FacetCollectionView, SummaryBarVie
                 model: this.model.get('summary_bar')
             });
 
-            // Render facet collections.
-            _.each(['base', 'primary'], function(facetCategory){
-                var view = new FacetCollectionView({
-                    el: $('.' + facetCategory + '-facets', this.el),
-                    model: this.model.get(facetCategory + '_facets')
-                });
-                this.subViews[facetCategory + '_facets'] = view;
-            }, this);
+            // Render facet collection.
+            var view = new FacetCollectionView({
+                el: $('.facets', this.el),
+                model: this.model.get('facets')
+            });
+            this.subViews.facets = view;
 
-            // Render add primary facets menu.
+            // Render add facets menu.
             this.renderAddFacetsMenu();
 
             // Do initial resize.
@@ -91,11 +89,11 @@ function($, Backbone, _, _s, ui, Menus, Util, FacetCollectionView, SummaryBarVie
 
         renderAddFacetsMenu: function(){
 
-            // Define a function that adds a facet to the primary facet collection,
+            // Define a function that adds a facet to the facet collection,
             // given a facet definition.
             var _this = this;
-            var addPrimaryFacet = function(facetModel){
-                _this.model.get('primary_facets').add(facetModel);
+            var addFacet = function(facetModel){
+                _this.model.get('facets').add(facetModel);
             };
 
             // Format menu items from predefined facets.
@@ -131,7 +129,7 @@ function($, Backbone, _, _s, ui, Menus, Util, FacetCollectionView, SummaryBarVie
 
             // Create menu view.
             var menuView = new Menus.views.TooltipMenuView({
-                el: $('.add-primary-facet-button', this.el),
+                el: $('.add-facet-button', this.el),
                 model: menuModel
             });
 
