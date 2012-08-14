@@ -105,7 +105,7 @@ function($, Backbone, _, _s, ui, Menus, Util, FacetCollectionView, SummaryBarVie
                     (function(def){
                         // Create model from definition.
                         var facetModel = _this.createFacetModelFromDef(def.get('facetDef'));
-                        addPrimaryFacet(facetModel);
+                        addFacet(facetModel);
                     })(facetDef);
                 });
                 var menuItem = {
