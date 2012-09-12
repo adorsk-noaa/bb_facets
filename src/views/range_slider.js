@@ -110,8 +110,14 @@ function($, Backbone, _, ui, _s, template){
         },
 
 		onRangeChange: function(){
-			this.$slider.slider("option", "min", this.range.get('min'));
-			this.$slider.slider("option", "max", this.range.get('max'));
+            var opts = {
+                min: this.range.get('min'),
+                max: this.range.get('max')
+            }
+            opts.step = (opts.max - opts.min)/100.0;
+            _.each(opts, function(val, opt){
+                this.$slider.slider("option", opt, val);
+            },this);
             this.onSelectionChange();
 		},
 
