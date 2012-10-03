@@ -77,7 +77,8 @@ function($, Backbone, _, _s, ui, Menus, Util, FacetCollectionView, SummaryBarVie
             });
 
             // Render facet collection.
-            var view = new FacetCollectionView({
+            var collection_view_class = this.getFacetCollectionViewClass();
+            var view = new collection_view_class({
                 el: $('.facets', this.el),
                 model: this.model.get('facets')
             });
@@ -88,6 +89,10 @@ function($, Backbone, _, _s, ui, Menus, Util, FacetCollectionView, SummaryBarVie
 
             // Do initial resize.
             this.resize();
+        },
+
+        getFacetCollectionViewClass: function(){
+            return FacetCollectionView;
         },
 
         renderAddFacetsMenu: function(){

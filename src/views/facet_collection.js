@@ -67,8 +67,12 @@ function($, Backbone, _, ui, facetViewClasses, template){
             }
         },
 
+        getFacetViewClass: function(facetModel){
+            return facetViewClasses[facetModel.get('type')];
+        },
+
         createFacetView: function(facetModel){
-            var viewClass = facetViewClasses[facetModel.get('type')];
+            var viewClass = this.getFacetViewClass(facetModel);
             if (viewClass){
                 return new viewClass({
                     model: facetModel
