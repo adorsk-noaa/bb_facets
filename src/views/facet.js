@@ -14,9 +14,10 @@ function($, Backbone, _, _s, template){
             'click .close-button' : 'remove'
         },
 
-		initialize: function(){
+		initialize: function(opts){
             $(this.el).addClass("facet");
             $(this.el).attr("id", _s.sprintf("facet-%s", this.model.cid));
+
             this.initialRender();
 		},
 
@@ -34,9 +35,15 @@ function($, Backbone, _, _s, template){
             if (info){
                 var $info = $(_s.sprintf('<a class="control facet-info-button info-button" href="javascript:{}">info</a>'));
                 $info.appendTo($('.facet-header', this.el));
-                var $info_content = $(_s.sprintf('<div class="content">%s</div>', info));
+                var $info_content = $(_s.sprintf('<div class="content">%s</div>', this.formatter(info)));
                 $info_content.appendTo($info);
             }
+        },
+
+        // Format a content string.
+        // This is here to be overridden, e.g. for replacing tokens in strings.
+        formatter: function(s){
+            return s;
         },
 
         postInitialize: function(){

@@ -77,8 +77,8 @@ function($, Backbone, _, ui, _s, FacetView, choices_template){
 				formatted_choice = {
                     widget_id: this.getChoiceWidgetId(choice.id),
 					id: choice['id'],
-					label: choice['label'],
-                    count_label: choice['count_label'] || choice['count']
+					label: this.formatter(choice['label']),
+                    count_label: this.formatter(choice['count_label'] || choice['count'])
 				};
 
 				// Add image.
