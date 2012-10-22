@@ -91,6 +91,12 @@ function($, Backbone, _, _s, ui, Menus, Util, FacetCollectionView, SummaryBarVie
             this.resize();
         },
 
+        // This is intended to be overriden to allow
+        // for formatting decoration.
+        formatter: function(s){
+            return s;
+        },
+
         getFacetCollectionViewClass: function(){
             return FacetCollectionView;
         },
@@ -148,8 +154,8 @@ function($, Backbone, _, _s, ui, Menus, Util, FacetCollectionView, SummaryBarVie
             _.each(this.model.get('quantity_fields').models, function(model){
                 choices.push({
                     value: model.id,
-                    label: model.get('label'),
-                    info: model.get('info')
+                    label: this.formatter(model.get('label')),
+                    info: this.formatter(model.get('info'))
                 });
             }, this);
             return choices;

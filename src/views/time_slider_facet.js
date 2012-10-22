@@ -5,7 +5,7 @@ define([
 	"use!ui",
 	"_s",
 	"./facet",
-	"uiExtras",
+	"use!uiExtras",
     ],
 function($, Backbone, _, ui, _s, FacetView, uiExtras){
 
