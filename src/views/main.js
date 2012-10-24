@@ -1,5 +1,5 @@
 define([
-	"use!underscore",
+	"underscore",
 	"./list_facet",
 	"./numeric_facet",
 	"./facet_collection",

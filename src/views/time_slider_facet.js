@@ -1,11 +1,11 @@
 define([
 	"jquery",
-	"use!backbone",
-	"use!underscore",
-	"use!ui",
+	"backbone",
+	"underscore",
+	"ui",
 	"_s",
 	"./facet",
-	"use!uiExtras",
+	"uiExtras",
     ],
 function($, Backbone, _, ui, _s, FacetView, uiExtras){
 

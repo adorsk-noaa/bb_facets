@@ -1,9 +1,9 @@
 define([
 	// libs
 	"jquery",
-	"use!backbone",
-	"use!underscore",
-	"use!ui",
+	"backbone",
+	"underscore",
+	"ui",
 	"_s",
 	"./facet",
 	"text!./templates/list_facet_choices.html",
