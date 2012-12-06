@@ -113,7 +113,7 @@ function($, Backbone, _, _s, ui, Menus, Util, FacetCollectionView, SummaryBarVie
             // Format menu items from predefined facets.
             var menuItems = [];
             _.each(this.model.get('predefined_facets').models, function(facetDef){
-                var $content = $('<span>' + facetDef.get('facetDef').label + '</span>');
+                var $content = $('<div>' + facetDef.get('facetDef').label + '</div>');
                 // Assign create facet function to content.
                 $content.on('click', function(){
                     (function(def){
