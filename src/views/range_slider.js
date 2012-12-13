@@ -12,28 +12,39 @@ function($, Backbone, _, ui, _s, template){
 
     events: {
       'slidestop .slider': 'onSlideStop',
-      'change input': 'onInputChange'
+      'change .range-input': 'onRangeInputChange'
     },
 
-    input_attrs: ['min', 'max'],
+    rangeInputAttrs: ['xmin', 'xmax', 'ymin', 'ymax'],
 
     initialize: function(){
+      var _this = this;
       $(this.el).addClass('range-slider');
 
       // Initialize selection and range if not set.
-      _.each(['selection', 'range'], function(attr){
-        var attr_model = this.model.get(attr);
-        if (! attr_model){
-          attr_model = new Backbone.Model({
-            min: null,
-            max: null
-          });
-          this.model.set(attr, attr_model);
-        }
-        this[attr] = attr_model;
-      }, this);
+      if (! this.model.get('selection')){
+        this.model.set('selection', new Backbone.Model({
+          min: null,
+          max: null
+        }));
+      }
+      this.selection = this.model.get('selection');
+
+      if (! this.model.get('range')){
+        this.model.set('selection', new Backbone.Model({
+          xmin: 0,
+          xmax: 1,
+          ymin: 0,
+          ymax: 1
+        }));
+      }
+      this.range = this.model.get('range');
 
       this.initialRender();
+
+      $.each(this.rangeInputAttrs, function(i,attr){
+        _this.setRangeInput(attr);
+      });
 
       this.range.on('change', this.onRangeChange, this);
       this.selection.on('change', this.onSelectionChange, this);
@@ -43,14 +54,17 @@ function($, Backbone, _, ui, _s, template){
 
     initialRender: function(){
       $(this.el).html(_.template(template));
+      this.$table = $(this.el).find('> table').eq(0);
+      this.$table.tabble();
       this.$slider = $('.slider', this.el);
 
       this.$slider.slider({
         range: true,
-        min: 0,
-        max: 100,
-        values: [0, 100]
+        min: this.selection.get('min') || 0,
+        max: this.selection.get('max') || 1,
+        values: [this.range.get('xmin') || 0, this.range.get('xmax') || 1]
       });
+      this.$slider.removeClass('ui-corner-all');
 
       // Add divs to the left and right of the slider.
       $('.ui-slider-range', this.el).before('<div class="ui-slider-range-left" style="position: absolute;"></div>');
@@ -61,18 +75,22 @@ function($, Backbone, _, ui, _s, template){
       this.$slider.on('slide', function(){
         _this.updateRangeLeftRight();
       });
+
+      this.$table.tabble('toggleTab', {pos: 'bottom'});
     },
 
-    onInputChange: function(e){
+    onRangeInputChange: function(e){
       var $input = $(e.currentTarget);
       var attr = $input.data('attr');
       var value = parseFloat($input.val());
-      this.model.get('range').set(attr, value);
+      this.range.set(attr, value);
     },
 
-    setInput: function(attr){
-      var $input = $(_s.sprintf('input.%s', attr), this.el);
-      $input.val(this.model.get('range').get(attr));
+    setRangeInput: function(attr){
+      var $input = $(_s.sprintf('.range-input.%s', attr), this.el);
+      if ($input.length){
+        $input.val(this.range.get(attr));
+      }
     },
 
     getSliderBounds: function(){
@@ -126,13 +144,13 @@ function($, Backbone, _, ui, _s, template){
 
     onRangeChange: function(){
       var opts = {
-        min: this.range.get('min'),
-        max: this.range.get('max')
+        min: this.range.get('xmin'),
+        max: this.range.get('xmax')
       }
       opts.step = (opts.max - opts.min)/100.0;
       _.each(opts, function(val, opt){
         this.$slider.slider("option", opt, val);
-        this.setInput(opt);
+        this.setRangeInput(opt);
       },this);
       this.onSelectionChange();
     },
@@ -140,21 +158,21 @@ function($, Backbone, _, ui, _s, template){
     onSelectionChange: function(){
       var sanitized = {};
       // Shortcut for range.
-      var range = {
-        min: this.range.get('min'),
-        max: this.range.get('max')
+      var xRange = {
+        min: this.range.get('xmin'),
+        max: this.range.get('xmax')
       };
       _.each(['min', 'max'], function(minmax){
         val = parseFloat(this.selection.get(minmax));
-        // If invalid or exceeds bound, set to range bound.
+        // If invalid or exceeds bound, set to xRange bound.
         if (isNaN(val)){
-          sanitized[minmax] = range[minmax];
+          sanitized[minmax] = xRange[minmax];
         }
-        else if (minmax =='min' && (sanitized.min < range.min)){
-          sanitized.min = range.min;
+        else if (minmax =='min' && (sanitized.min < xRange.min)){
+          sanitized.min = xRange.min;
         }
-        else if( minmax == 'max' && (sanitized.max > range.max)){
-          sanitized.max = range.max;
+        else if( minmax == 'max' && (sanitized.max > xRange.max)){
+          sanitized.max = xRange.max;
         }
         else{
           sanitized[minmax] = val;
@@ -171,6 +189,7 @@ function($, Backbone, _, ui, _s, template){
     },
 
     onReady: function(){
+      this.$table.tabble('resize');
       this.onRangeChange();
       this.onSelectionChange();
     }

@@ -1,8 +1,35 @@
 @import url("require:CommonStyles/styles/variables.less");
+@import url("require:CommonStyles/styles/button.less");
+
 .range-slider{
   z-index: 2;
+
+  > table{
+    width: 100%;
+    height: 100%;
+  }
+
+  .ui-tabble-tab {
+    background-color: inherit;
+    > h3 {
+      .button;
+      margin: 0;
+      font-weight: normal;
+      padding: 0;
+      font-size: 8px;
+
+      .ui-tabble-arrow{
+        .button;
+      }
+    }
+
+    input {
+      font-size: 8px;
+    }
+  }
+
+
   .slider {
-    z-index: -5;
     background-color: transparent;
     background-image: none;
     height: 100%;
@@ -26,21 +53,36 @@
   }
 
   .inputs{
-    width: 100%;
     font-size: 10px;
-    .input {
-      > input {
-        width: 50px;
-      }
-    }
+  }
 
-    .min-input {
+  .y-inputs{
+    width: 50px;
+    input {
+      width: 100%;
+    }
+    .y-input{
+      position: absolute;
+      left: 0;
+      right: 0;
+    }
+    .ymax-input{
+      top: 0;
+    }
+    .ymin-input{
+      bottom: 0;
+    }
+  }
+
+  .x-inputs{
+    width: 100%;
+    .xmin-input {
       float: left;
       > input {
         text-align: left;
       }
     }
-    .max-input {
+    .xmax-input {
       float: right;
       > input {
         text-align: right;

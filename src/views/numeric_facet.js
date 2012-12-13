@@ -18,26 +18,35 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
     }),
 
     initialize: function(){
+      this.subViews = {};
+
+      // Initialize selection and range if not set.
+      if (! this.model.get('selection')){
+        this.model.set('selection', new Backbone.Model({
+          min: 0,
+          max: 1
+        }));
+      }
+      this.selection = this.model.get('selection');
+
+      if (! this.model.get('range')){
+        this.model.set('selection', new Backbone.Model({
+          xmin: 0,
+          xmax: 1,
+          ymin: -1,
+          ymax: 1
+        }));
+      }
+      this.range = this.model.get('range');
+
       FacetView.prototype.initialize.call(this, arguments);
       $(this.el).addClass("numeric-facet range-facet");
       this.postInitialize();
     },
 
-    postInitialize: function(){
-      FacetView.prototype.postInitialize.call(this, arguments);
-
-      // Initialize selection and range if not set.
-      _.each(['selection', 'range'], function(attr){
-        var attr_model = this.model.get(attr);
-        if (! attr_model){
-          attr_model = new Backbone.Model({
-            min: null,
-            max: null
-          });
-          this.model.set(attr, attr_model);
-        }
-        this[attr] = attr_model;
-      }, this);
+    initialRender: function(){
+      var _this = this;
+      FacetView.prototype.initialRender.call(this, arguments);
 
       // Add reset control to title controls.
       this.addResetButton();
@@ -53,11 +62,23 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
         this.selectionInputs[minmax] = $input;
       }, this);
 
-      this.slider = new RangeSliderView({
+      // Create slider.
+      this.subViews.slider = new RangeSliderView({
         el: $('.slider-widget', this.el),
         model: this.model
       });
 
+      // Create histogram elements in slider's container.
+      var $sliderContainer = $('.slider', this.subViews.slider.el).parent();
+      $.each(['base', 'filtered'], function(i, category){
+        var $histEl = $(_s.sprintf('<div class="histogram %s-histogram"></div>', category));
+        $histEl.appendTo($sliderContainer);
+        _this['$' + category + 'Histogram'] = $histEl;
+      });
+    },
+
+    postInitialize: function(){
+      FacetView.prototype.postInitialize.call(this, arguments);
 
       // Listen for events.
       this.selection.on('change', this.onSelectionChange, this);
@@ -90,10 +111,6 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
 
     },
 
-    onRangeChange: function(){
-      return;
-    },
-
     formatter: function(format, value){
       return _s.sprintf(format, value);
     },
@@ -116,21 +133,22 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
     },
 
     rangeIsValid: function(){
-      var rmin = parseFloat(this.range.get('min'));
-      var rmax = parseFloat(this.range.get('max'));
+      var _this = this;
+      $.each(['x', 'y'], function(i, xy){
+        var min = parseFloat(_this.range.get(xy + 'min'));
+        var max = parseFloat(_this.range.get(xy + 'max'));
 
-      if (isNaN(rmin) || isNaN(rmax) || rmin > rmax){
-        return false;
-      }
-      else{
-        return true;
-      }
+        if (isNaN(min) || isNaN(max) || min > max){
+          return false;
+        }
+      });
+      return true;
     },
 
     renderBaseHistogram: function(){
       if (this.rangeIsValid()){
         this.renderHistogram({
-          el: $('.base-histogram', this.el),
+          el: this.$baseHistogram,
           histogram: this.model.get('base_histogram')
         });
       }
@@ -139,39 +157,56 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
     renderFilteredHistogram: function(){
       if (this.rangeIsValid()){
         this.renderHistogram({
-          el: $('.filtered-histogram', this.el),
+          el: this.$filteredHistogram,
           histogram: this.model.get('filtered_histogram')
         });
       }
     },
 
     renderHistogram: function(options){
+      var _this = this;
       histogram_el = $(options['el'], this.el);
       histogram_el.empty();
 
       histogram = options['histogram'];
+      hstats = this.getHistogramStats(this.model.get('base_histogram'));
 
-      histogram_stats = this.getHistogramStats(this.model.get('base_histogram'));
+      console.log(this.range.toJSON());
 
-      x_min = histogram_stats['x_min'];
-      x_max = histogram_stats['x_max'];
-      x_range = x_max - x_min;
+      var scale = function(xy, v){
+        var xyMin = _this.range.get(xy + 'min');
+        var xyMax = _this.range.get(xy + 'max');
+        return Math.round((v - xyMin)/(xyMax - xyMin) * 100);
+      };
 
-      y_min = histogram_stats['y_min'];
-      y_max = histogram_stats['y_max'];
-      y_range = y_max - y_min;
+      var y0 = scale('y', 0);
 
       _.each(histogram, function(bucket){
-        bucket_x = Math.round((bucket['min'] - x_min)/x_range * 100.0);
-        bucket_width = Math.round((bucket['max'] - bucket['min'])/x_range * 100.0);
-        bucket_y = Math.round((bucket['count'] - y_min)/y_range * 100.0);
+        scaledX = scale('x', bucket['min']);
+        scaledWidth = scale('x', bucket['max']) - scale('x', bucket['min']);
+        scaledY = scale('y', bucket['count']);
 
         // Show stub for small fractional values.
-        if (bucket_y < 1 && bucket_y > 0){
-          bucket_y = 1;
+        if (scaledY != y0 && scaledY > (y0 - 1) && scaledY < (y0 +1)){
+          scaledY = y0 + (scaledY < 0 ) ? -1 : 1;
         }
 
-        bucket_el = $(_s.sprintf("<div class='bar' style='position: absolute; left: %d%%; bottom: 0; width:%d%%; height: %d%%;'><div class='bar-body'></div></div>", bucket_x, bucket_width, bucket_y));
+        // Determine direction.
+        var top, bottom;
+        if (scaledY < y0){
+          top = 100 - y0;
+          bottom = scaledY;
+        }
+        else if (scaledY > y0){
+          bottom = y0;
+          top = 100 - scaledY;
+        }
+        else if (scaledY == y0){
+          bottom = y0;
+          top = 100 - y0;
+        }
+
+        bucket_el = $(_s.sprintf("<div class='bar' style='position: absolute; left: %d%%; width:%d%%; bottom: %d%%; top: %d%%;'><div class='bar-body'></div></div>", scaledX, scaledWidth, bottom, top));
         histogram_el.append(bucket_el);
       }, this);
 
@@ -185,6 +220,11 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
       };
     },
 
+    onRangeChange: function(){
+      this.renderBaseHistogram();
+      this.renderFilteredHistogram();
+    },
+
     resetFilters: function(){
       this.selection.set({
         'min': '',
@@ -194,8 +234,9 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
 
     onReady: function(){
       this.onSelectionChange();
-      this.onRangeChange();
-      this.slider.trigger('ready');
+      $.each(this.subViews, function(id, subView){
+        subView.trigger('ready');
+      });
     },
 
     updateResetButton: function(){
