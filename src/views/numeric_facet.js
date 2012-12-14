@@ -97,13 +97,11 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
       this.selection.set(minmax, val);
     },
 
-    onSelectionChange: function(model, changes){
+    onSelectionChange: function(model){
       // Update text widgets.
       _.each(['min', 'max'], function(minmax){
-        if (changes && changes.changes && changes.changes.hasOwnProperty(minmax)){
-          var val = this.selection.get(minmax);
-          this.selectionInputs[minmax].val(val);
-        }
+        var val = this.selection.get(minmax);
+        this.selectionInputs[minmax].val(val);
       }, this);
 
       // Update reset button.
