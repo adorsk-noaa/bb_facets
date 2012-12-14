@@ -30,7 +30,7 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
       this.selection = this.model.get('selection');
 
       if (! this.model.get('range')){
-        this.model.set('selection', new Backbone.Model({
+        this.model.set('range', new Backbone.Model({
           xmin: 0,
           xmax: 1,
           ymin: -1,
