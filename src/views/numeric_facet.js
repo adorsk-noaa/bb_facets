@@ -88,7 +88,7 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
       this.selection.on('change', this.onSelectionChange, this);
       this.range.on('change', this.onRangeChange, this);
       this.model.on('change:base_histogram', this.onBaseHistogramChange, this);
-      this.model.on('change:filtered_histogram', this.renderFilteredHistogram, this);
+      this.model.on('change:filtered_histogram', this.onFilteredHistogramChange, this);
       this.on('ready', this.onReady, this);
     },
 
@@ -147,12 +147,13 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
       return true;
     },
 
-    onBaseHistogramChange: function(){
+    // Update range base histogram bounds if
+    // range 'fit' attrs are set.
+    updateRange: function(){
       var _this = this;
-      if (this.rangeIsValid()){
-        var hStats = this.getHistogramStats(
-          this.model.get('base_histogram'));
-        // Fit ranges if fit is enabled.
+      var baseHist = this.model.get('base_histogram');
+      if (baseHist){
+        var hStats = this.getHistogramStats(baseHist);
         var rangeSetObj = {};
         $.each(['x', 'y'], function(i, xy){
           if (_this.range.get(xy + 'fit')){
@@ -163,36 +164,27 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
           }
         });
         this.range.set(rangeSetObj);
-        this.renderBaseHistogram();
       }
+    },
+
+    onBaseHistogramChange: function(){
+      this.updateRange();
+      this.renderHistogram('base');
     },
 
     onFilteredHistogramChange: function(){
-      if (this.rangeIsValid()){
-        this.renderFilteredHistogram();
-      }
+      this.renderHistogram('filtered');
     },
 
-    renderBaseHistogram: function(){
-      this.renderHistogram({
-        el: this.$baseHistogram,
-        histogram: this.model.get('base_histogram')
-      });
-    },
-
-    renderFilteredHistogram: function(){
-      this.renderHistogram({
-        el: this.$filteredHistogram,
-        histogram: this.model.get('filtered_histogram')
-      });
-    },
-
-    renderHistogram: function(options){
+    renderHistogram: function(histId){
       var _this = this;
-      histogram_el = $(options['el'], this.el);
-      histogram_el.empty();
+      $histogram = this['$' + histId + 'Histogram'];
+      $histogram.empty();
 
-      histogram = options['histogram'];
+      histogram = this.model.get(histId + '_histogram');
+      if (! histogram){
+        return;
+      }
 
       var scale = function(xy, v){
         var xyMin = _this.range.get(xy + 'min');
@@ -228,7 +220,7 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
         }
 
         bucket_el = $(_s.sprintf("<div class='bar' style='position: absolute; left: %d%%; width:%d%%; bottom: %d%%; top: %d%%;'><div class='bar-body'></div></div>", scaledX, scaledWidth, bottom, top));
-        histogram_el.append(bucket_el);
+        $histogram.append(bucket_el);
       }, this);
 
       return this;
@@ -242,14 +234,11 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
     },
 
     onRangeChange: function(){
-      if (this.rangeIsValid()){
-        if (this.model.get('base_histogram')){
-          this.renderBaseHistogram();
-        }
-        if (this.model.get('filtered_histogram')){
-          this.renderFilteredHistogram();
-        }
-      }
+      var _this = this;
+      this.updateRange();
+      $.each(['base', 'filtered'], function(i, histId){
+        _this.renderHistogram(histId);
+      });
     },
 
     resetFilters: function(){
