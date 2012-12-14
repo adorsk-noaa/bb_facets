@@ -76,6 +76,15 @@
     .ymax-input{
       top: 0;
     }
+    .yfit-input{
+      top: 50%;
+      margin-top: -1em;
+      input {
+        padding: 0;
+        margin: 0;
+        vertical-align: bottom;
+      }
+    }
     .ymin-input{
       bottom: 0;
     }
@@ -89,6 +98,18 @@
       float: left;
       > input {
         text-align: left;
+      }
+    }
+    .xfit-input{
+      position: absolute;
+      left: 0;
+      right: 0;
+      text-align: center;
+      input {
+        width: auto;
+        padding: 0;
+        margin: 0;
+        vertical-align: bottom;
       }
     }
     .xmax-input {

@@ -68,7 +68,8 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
         model: this.model,
         formatter: function(f, v){
           return _this.formatter(f,v);
-        }
+        },
+        showFitCheckboxes: true
       });
 
       // Create histogram elements in slider's container.
@@ -86,7 +87,7 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
       // Listen for events.
       this.selection.on('change', this.onSelectionChange, this);
       this.range.on('change', this.onRangeChange, this);
-      this.model.on('change:base_histogram', this.renderBaseHistogram, this);
+      this.model.on('change:base_histogram', this.onBaseHistogramChange, this);
       this.model.on('change:filtered_histogram', this.renderFilteredHistogram, this);
       this.on('ready', this.onReady, this);
     },
@@ -118,16 +119,16 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
 
     getHistogramStats: function(histogram){
       var stats = {
-        x_min: 0,
-        x_max: 0,
-        y_min: 0,
-        y_max: 0
+        xmin: 0,
+        xmax: 0,
+        ymin: 0,
+        ymax: 0
       }
       if (histogram.length > 0){
-        stats['x_min'] = _.min(histogram, function(bucket){return bucket['min']})['min'];
-        stats['x_max'] = _.max(histogram, function(bucket){return bucket['max']})['max'];
-        stats['y_min'] = _.min(histogram, function(bucket){return bucket['count']})['count'];
-        stats['y_max'] = _.max(histogram, function(bucket){return bucket['count']})['count'];
+        stats['xmin'] = _.min(histogram, function(bucket){return bucket['min']})['min'];
+        stats['xmax'] = _.max(histogram, function(bucket){return bucket['max']})['max'];
+        stats['ymin'] = _.min(histogram, function(bucket){return bucket['count']})['count'];
+        stats['ymax'] = _.max(histogram, function(bucket){return bucket['count']})['count'];
       }
 
       return stats;
@@ -146,22 +147,44 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
       return true;
     },
 
-    renderBaseHistogram: function(){
+    onBaseHistogramChange: function(){
+      var _this = this;
       if (this.rangeIsValid()){
-        this.renderHistogram({
-          el: this.$baseHistogram,
-          histogram: this.model.get('base_histogram')
+        var hStats = this.getHistogramStats(
+          this.model.get('base_histogram'));
+        // Fit ranges if fit is enabled.
+        var rangeSetObj = {};
+        $.each(['x', 'y'], function(i, xy){
+          if (_this.range.get(xy + 'fit')){
+            $.each(['min', 'max'], function(i, minmax){
+              var attr = xy + minmax;
+              rangeSetObj[attr] = hStats[attr];
+            });
+          }
         });
+        this.range.set(rangeSetObj);
+        this.renderBaseHistogram();
       }
     },
 
-    renderFilteredHistogram: function(){
+    onFilteredHistogramChange: function(){
       if (this.rangeIsValid()){
-        this.renderHistogram({
-          el: this.$filteredHistogram,
-          histogram: this.model.get('filtered_histogram')
-        });
+        this.renderFilteredHistogram();
       }
+    },
+
+    renderBaseHistogram: function(){
+      this.renderHistogram({
+        el: this.$baseHistogram,
+        histogram: this.model.get('base_histogram')
+      });
+    },
+
+    renderFilteredHistogram: function(){
+      this.renderHistogram({
+        el: this.$filteredHistogram,
+        histogram: this.model.get('filtered_histogram')
+      });
     },
 
     renderHistogram: function(options){
@@ -170,7 +193,6 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
       histogram_el.empty();
 
       histogram = options['histogram'];
-      hstats = this.getHistogramStats(this.model.get('base_histogram'));
 
       var scale = function(xy, v){
         var xyMin = _this.range.get(xy + 'min');
@@ -220,11 +242,13 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
     },
 
     onRangeChange: function(){
-      if (this.model.get('base_histogram')){
-        this.renderBaseHistogram();
-      }
-      if (this.model.get('filtered_histogram')){
-        this.renderFilteredHistogram();
+      if (this.rangeIsValid()){
+        if (this.model.get('base_histogram')){
+          this.renderBaseHistogram();
+        }
+        if (this.model.get('filtered_histogram')){
+          this.renderFilteredHistogram();
+        }
       }
     },
 

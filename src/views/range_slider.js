@@ -15,15 +15,17 @@ function($, Backbone, _, ui, _s, template){
       'change .range-input': 'onRangeInputChange'
     },
 
-    rangeInputAttrs: ['xmin', 'xmax', 'ymin', 'ymax'],
+    rangeInputAttrs: ['xmin', 'xmax', 'xfit', 'ymin', 'ymax', 'yfit'],
 
     initialize: function(opts){
       var _this = this;
       opts = opts || {};
-      $.extend(opts, {
-        rangeLabelFormat: '%.1e'
+      opts = $.extend({}, {
+        rangeLabelFormat: '%.1e',
+        showFitCheckboxes: false
       }, opts);
       this.rangeLabelFormat = opts.rangeLabelFormat;
+      this.showFitCheckboxes = opts.showFitCheckboxes;
       if (opts.formatter){
         this.formatter = opts.formatter;
       }
@@ -51,9 +53,7 @@ function($, Backbone, _, ui, _s, template){
 
       this.initialRender();
 
-      $.each(this.rangeInputAttrs, function(i,attr){
-        _this.setRangeInput(attr);
-      });
+      this.onRangeChange();
 
       this.range.on('change', this.onRangeChange, this);
       this.selection.on('change', this.onSelectionChange, this);
@@ -66,7 +66,15 @@ function($, Backbone, _, ui, _s, template){
     },
 
     initialRender: function(){
-      $(this.el).html(_.template(template));
+      var _this = this;
+      $(this.el).html(_.template(template, {model: this.model}));
+
+      if (! this.showFitCheckboxes){
+        $.each(['x', 'y'], function(i, xy){
+          $('.' + xy + 'fit-input', _this.el).remove();
+        });
+      }
+
       this.$table = $(this.el).find('> table').eq(0);
       this.$table.tabble({
         invertToggleArrows: true
@@ -94,17 +102,44 @@ function($, Backbone, _, ui, _s, template){
     },
 
     onRangeInputChange: function(e){
+      var _this = this;
       var $input = $(e.currentTarget);
       var attr = $input.data('attr');
-      var value = parseFloat($input.val());
+      var value = null;
+      if (attr == 'xfit' || attr == 'yfit'){
+        var xy = attr.substr(0,1);
+        var value = $input.is(':checked');
+        $('.' + xy + '-inputs input[type="text"]', this.el).each(
+          function(i, textEl){
+            $(textEl).prop('disabled', value);
+          }
+        );
+      }
+      else{
+        value = parseFloat($input.val());
+      }
       this.range.set(attr, value);
     },
 
     setRangeInput: function(attr){
+      var _this = this;
+      var value = this.range.get(attr);
       var $input = $(_s.sprintf('.range-input.%s', attr), this.el);
       if ($input.length){
-        $input.val(this.range.get(attr));
+        if ($input.attr('type') == 'checkbox'){
+          $input.attr('checked', value);
+        }
+        else{
+          $input.val(value);
+        }
       }
+
+      // Set formatted text on tabs for min/max.
+      var xy = attr.substr(0,1);
+      var minmax = attr.substr(1);
+      var $tab = $('.' + xy + 'tab', this.el);
+      var formattedValue = ($.isNumeric(value)) ? value.toPrecision(2) : '';
+      $tab.find('> h3 > .' + minmax).html(formattedValue);
     },
 
     getSliderBounds: function(){
@@ -158,6 +193,12 @@ function($, Backbone, _, ui, _s, template){
 
     onRangeChange: function(){
       var _this = this;
+
+      // Update range inputs.
+      $.each(this.rangeInputAttrs, function(i,attr){
+        _this.setRangeInput(attr);
+      });
+
       var opts = {
         min: this.range.get('xmin'),
         max: this.range.get('xmax')
@@ -168,16 +209,6 @@ function($, Backbone, _, ui, _s, template){
         this.setRangeInput(opt);
       },this);
       this.onSelectionChange();
-
-      // Set ranges on tabs.
-      $.each(['x', 'y'], function(i, xy){
-        var $tab = $('.' + xy + 'tab', _this.el);
-        $.each(['min', 'max'], function(j, minmax){
-          var rawValue = _this.range.get(xy + minmax);
-          var formattedValue = rawValue.toPrecision(2);
-          $tab.find('> h3 > .' + minmax).html(formattedValue);
-        });
-      });
     },
 
     onSelectionChange: function(){

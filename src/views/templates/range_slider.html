@@ -12,6 +12,10 @@
                     <div class="ymin-input y-input input">
                         <input data-attr="ymin" type="text" class="range-input minmax ymin"/>
                     </div>
+                    <div class="yfit-input y-input input">
+                        <input id="<% print('.' + model.cid + '-yfit');%>" data-attr="yfit" type="checkbox" class="range-input yfit">
+                        <label for="<% print ('.' + model.cid + '-yfit'); %>">fit</label>
+                    </div>
                     <div class="ymax-input y-input input">
                         <input data-attr="ymax" type="text" class="range-input minmax ymax"/>
                     </div>
@@ -32,6 +36,10 @@
                 <div class="inputs x-inputs">
                     <div class="xmin-input input">
                         <input data-attr="xmin" type="text" class="range-input minmax xmin"/>
+                    </div>
+                    <div class="xfit-input x-input input">
+                        <input id="<% print('.' + model.cid + '-xfit');%>" data-attr="xfit" type="checkbox" class="range-input xfit">
+                        <label for="<% print ('.' + model.cid + '-xfit'); %>">fit</label>
                     </div>
                     <div class="xmax-input input">
                         <input data-attr="xmax" type="text" class="range-input minmax xmax"/>
