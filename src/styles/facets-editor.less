@@ -46,18 +46,40 @@
     overflow-y: scroll;
     overflow-x: hidden;
 
-    > .summary-bar-section{
-      .summary-bar {
-        > .inner {
-          .rounded_corners(@padding_normal);
-          margin: 0 5px; 
-          padding: 5px 5px;
-          .text {
-            .selected {
-              font-weight: bold;
-            }
+    .parameter-section{
+      .selected-parameter-title {
+        font-weight: bold;
+      }
+    }
+
+    .summary-bar {
+      > .inner {
+        .rounded_corners(@padding_normal);
+        margin: 0 5px; 
+        padding: 5px 5px;
+
+        .count-image{
+          width: 100%;
+          .scalebar-container{
+            border: thin solid @faint_grey;
+            display: block;
+            height: 1em;
+          }
+          .scalebar-fill{
+            height: 100%;
+            background-color: @chrome_primary;
+            display: block;
           }
         }
+
+        .text {
+          margin-top: @padding_normal;
+
+          .selected{
+            font-weight: bold;
+          }
+        }
+
       }
     }
 

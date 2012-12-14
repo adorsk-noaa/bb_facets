@@ -6,8 +6,9 @@ define(
     "_s",
     "ui",
     "Util",
+    "text!./templates/summaryBar.html"
 ],
-function($, Backbone, _, _s, ui, Util){
+function($, Backbone, _, _s, ui, Util, template){
 
   var SummaryBarView = Backbone.View.extend({
 
@@ -31,7 +32,7 @@ function($, Backbone, _, _s, ui, Util){
     },
 
     initialRender: function(){
-      $(this.el).html('<div class="inner"><div class="text"><div><span class="field"></span>:<div class="selected"></div><div class="total"></div></div></div>');
+      $(this.el).html(_.template(template));
     },
 
     onDataChange: function(){
@@ -58,9 +59,9 @@ function($, Backbone, _, _s, ui, Util){
         percentage = 100.0 * data.selected/data.total;
       }
 
-      $(".text .field", this.el).html(_s.sprintf("'%s'", this.model.get('quantity_field').get('label')));
       $(".text .selected", this.el).html(formatted_selected);
-      $(".text .total", this.el).html(_s.sprintf('(%.1f%% of %s total)', percentage, formatted_total));
+      $(".text .total", this.el).html(_s.sprintf('(<span class="pct">%.1f%%</span> of %s total)', percentage, formatted_total));
+      $('.scalebar-fill', this.el).css('width', percentage + '%');
 
       this.trigger('change:size');
 

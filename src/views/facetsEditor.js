@@ -36,6 +36,7 @@ function($, Backbone, _, _s, ui, Menus, Tabble, Util, FacetCollectionView, Summa
       // Initialize qfield selector model if not provided.
       // @TODO: should probably encapsulate this as
       // 'this.model.get('selected_quantity_field') later...
+      /*
       var qFieldSelectModel = this.model.get('qfield_select');
       if (! qFieldSelectModel){
         // Create choices.
@@ -46,6 +47,7 @@ function($, Backbone, _, _s, ui, Menus, Tabble, Util, FacetCollectionView, Summa
         });
         this.model.set('qfield_select', qFieldSelectModel);
       }
+      */
 
       // Registry for sub-views.
       this.subViews = {};
@@ -54,6 +56,9 @@ function($, Backbone, _, _s, ui, Menus, Tabble, Util, FacetCollectionView, Summa
 
       // Listen for ready events.
       this.on('ready', this.onReady, this);
+
+      // Listen for qfield change events.
+      this.model.on('change:selected_qfield', this.onSelectedQFieldChange, this);
 
       // Listen for resize events.
       this.on('resize', this.resize, this);
@@ -67,11 +72,7 @@ function($, Backbone, _, _s, ui, Menus, Tabble, Util, FacetCollectionView, Summa
         stretchTable: true
       });
 
-      this.qFieldSelect = new Util.views.InfoSelectView({
-        el : $('.quantity-field-selector', this.el),
-        model: this.model.get('qfield_select')
-      });
-      this.subViews.qFieldSelect = this.qFieldSelect;
+      this.renderSelectParameterMenu();
 
       // Render summary bar.
       this.subViews.summaryBar = new SummaryBarView({
@@ -103,6 +104,50 @@ function($, Backbone, _, _s, ui, Menus, Tabble, Util, FacetCollectionView, Summa
 
     getFacetCollectionViewClass: function(){
       return FacetCollectionView;
+    },
+
+    renderSelectParameterMenu: function(){
+
+      // Define a function that adds a facet to the facet collection,
+      // given a facet definition.
+      var _this = this;
+
+      // Format menu items from quantity fields.
+      var menuItems = [];
+
+      _.each(this.model.get('quantity_fields').models, function(qfieldModel){
+        var $content = $('<div>' + qfieldModel.get('label') + '</div>');
+        // Assign select parameter function to content.
+        $content.on('click', function(){
+          (function(qfieldModel){
+            _this.model.set('selected_qfield', qfieldModel);
+          })(qfieldModel);
+        });
+        var menuItem = {
+          content: $content,
+          id: qfieldModel.id
+        };
+
+        // Add menu item to list.
+        menuItems.push(menuItem);
+      }, this);
+
+      // Create menu with 'Select Parameter..' menu item.
+      var menu = {
+        items: [{content: 'Select Parameter...', items: menuItems}]
+      };
+
+      // Create menu model.
+      var menuModel = new Backbone.Model({
+        menu: menu
+      });
+
+      // Create menu view.
+      var menuView = new Menus.views.TooltipMenuView({
+        el: $('.select-parameter-button', this.el),
+        model: menuModel
+      });
+
     },
 
     renderAddFacetsMenu: function(){
@@ -153,18 +198,6 @@ function($, Backbone, _, _s, ui, Menus, Tabble, Util, FacetCollectionView, Summa
 
     },
 
-    formatQFieldChoices: function(){
-      var choices = [];
-      _.each(this.model.get('quantity_fields').models, function(model){
-        choices.push({
-          value: model.id,
-          label: this.formatter(model.get('label')),
-          info: this.formatter(model.get('info'))
-        });
-      }, this);
-      return choices;
-    },
-
     createFacetModelFromDef: function(facetDef){
       var facetModel = new Backbone.Model(_.extend({
       }, facetDef));
@@ -175,6 +208,11 @@ function($, Backbone, _, _s, ui, Menus, Tabble, Util, FacetCollectionView, Summa
       }
 
       return facetModel;
+    },
+
+    onSelectedQFieldChange: function(){
+      var qfieldModel = this.model.get('selected_qfield');
+      $('.selected-parameter-title', this.el).html(qfieldModel.get('label'));
     },
 
     resize: function(){
