@@ -17,8 +17,17 @@ function($, Backbone, _, ui, _s, template){
 
     rangeInputAttrs: ['xmin', 'xmax', 'ymin', 'ymax'],
 
-    initialize: function(){
+    initialize: function(opts){
       var _this = this;
+      opts = opts || {};
+      $.extend(opts, {
+        rangeLabelFormat: '%.1e'
+      }, opts);
+      this.rangeLabelFormat = opts.rangeLabelFormat;
+      if (opts.formatter){
+        this.formatter = opts.formatter;
+      }
+
       $(this.el).addClass('range-slider');
 
       // Initialize selection and range if not set.
@@ -52,10 +61,16 @@ function($, Backbone, _, ui, _s, template){
 
     },
 
+    formatter: function(format, value){
+      return _s.sprintf(format, value);
+    },
+
     initialRender: function(){
       $(this.el).html(_.template(template));
       this.$table = $(this.el).find('> table').eq(0);
-      this.$table.tabble();
+      this.$table.tabble({
+        invertToggleArrows: true
+      });
       this.$slider = $('.slider', this.el);
 
       this.$slider.slider({
@@ -76,7 +91,6 @@ function($, Backbone, _, ui, _s, template){
         _this.updateRangeLeftRight();
       });
 
-      this.$table.tabble('toggleTab', {pos: 'bottom'});
     },
 
     onRangeInputChange: function(e){
@@ -143,6 +157,7 @@ function($, Backbone, _, ui, _s, template){
     },
 
     onRangeChange: function(){
+      var _this = this;
       var opts = {
         min: this.range.get('xmin'),
         max: this.range.get('xmax')
@@ -153,6 +168,16 @@ function($, Backbone, _, ui, _s, template){
         this.setRangeInput(opt);
       },this);
       this.onSelectionChange();
+
+      // Set ranges on tabs.
+      $.each(['x', 'y'], function(i, xy){
+        var $tab = $('.' + xy + 'tab', _this.el);
+        $.each(['min', 'max'], function(j, minmax){
+          var rawValue = _this.range.get(xy + minmax);
+          var formattedValue = rawValue.toPrecision(2);
+          $tab.find('> h3 > .' + minmax).html(formattedValue);
+        });
+      });
     },
 
     onSelectionChange: function(){

@@ -58,14 +58,17 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
       // Save shortcuts to text inputs.
       this.selectionInputs = {};
       _.each(['min', 'max'], function(minmax){
-        var $input = $(_s.sprintf('.selection-inputs input[name="%s"]', minmax), this.el);
+        var $input = $(_s.sprintf('.selection-inputs input[name="%s"]', minmax), _this.el);
         this.selectionInputs[minmax] = $input;
       }, this);
 
       // Create slider.
       this.subViews.slider = new RangeSliderView({
         el: $('.slider-widget', this.el),
-        model: this.model
+        model: this.model,
+        formatter: function(f, v){
+          return _this.formatter(f,v);
+        }
       });
 
       // Create histogram elements in slider's container.
@@ -171,8 +174,6 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
       histogram = options['histogram'];
       hstats = this.getHistogramStats(this.model.get('base_histogram'));
 
-      console.log(this.range.toJSON());
-
       var scale = function(xy, v){
         var xyMin = _this.range.get(xy + 'min');
         var xyMax = _this.range.get(xy + 'max');
@@ -221,8 +222,12 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
     },
 
     onRangeChange: function(){
-      this.renderBaseHistogram();
-      this.renderFilteredHistogram();
+      if (this.model.get('base_histogram')){
+        this.renderBaseHistogram();
+      }
+      if (this.model.get('filtered_histogram')){
+        this.renderFilteredHistogram();
+      }
     },
 
     resetFilters: function(){

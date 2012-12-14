@@ -20,6 +20,16 @@
 
       .ui-tabble-arrow{
         .button;
+        padding: 0;
+      }
+
+      .min{
+        float: left;
+        text-align: left;
+      }
+      .max{
+        float: right;
+        text-align: right;
       }
     }
 
@@ -58,13 +68,10 @@
 
   .y-inputs{
     width: 50px;
-    input {
-      width: 100%;
-    }
     .y-input{
       position: absolute;
-      left: 0;
-      right: 0;
+      left: 2px;
+      right: 2px;
     }
     .ymax-input{
       top: 0;
@@ -75,7 +82,9 @@
   }
 
   .x-inputs{
-    width: 100%;
+    input{
+      width: 50px;
+    }
     .xmin-input {
       float: left;
       > input {
