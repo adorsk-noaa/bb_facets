@@ -23,8 +23,8 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
       // Initialize selection and range if not set.
       if (! this.model.get('selection')){
         this.model.set('selection', new Backbone.Model({
-          min: 0,
-          max: 1
+          min: null,
+          max: null
         }));
       }
       this.selection = this.model.get('selection');
@@ -33,7 +33,7 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
         this.model.set('range', new Backbone.Model({
           xmin: 0,
           xmax: 1,
-          ymin: -1,
+          ymin: 0,
           ymax: 1
         }));
       }
@@ -101,8 +101,9 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
     onSelectionChange: function(model){
       // Update text widgets.
       _.each(['min', 'max'], function(minmax){
-        var val = this.selection.get(minmax);
-        this.selectionInputs[minmax].val(val);
+        var rawValue = this.selection.get(minmax);
+        var formattedValue = ($.isNumeric(rawValue)) ? rawValue.toPrecision(2) : '';
+        this.selectionInputs[minmax].val(formattedValue);
       }, this);
 
       // Update reset button.
