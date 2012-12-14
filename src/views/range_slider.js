@@ -58,6 +58,7 @@ function($, Backbone, _, ui, _s, template){
       this.range.on('change', this.onRangeChange, this);
       this.selection.on('change', this.onSelectionChange, this);
       this.on('ready', this.onReady, this);
+      this.on('resizeStop', this.onResizeStop, this);
 
     },
 
@@ -245,9 +246,13 @@ function($, Backbone, _, ui, _s, template){
     },
 
     onReady: function(){
-      this.$table.tabble('resize');
       this.onRangeChange();
       this.onSelectionChange();
+      this.onResizeStop();
+    },
+
+    onResizeStop: function(){
+      this.$table.tabble('resize');
     }
 
   });

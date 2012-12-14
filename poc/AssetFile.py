@@ -60,7 +60,7 @@ assets = {
         'source': 'https://github.com/adorsk/underscore.string.git',
         'path': 'lib/underscore.string.js'
     },
-    'Util': {
+    'util': {
         'type': 'git',
         'source': 'https://github.com/adorsk-noaa/georefine_util.git'
     },
