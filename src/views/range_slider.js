@@ -15,17 +15,17 @@ function($, Backbone, _, ui, _s, template){
       'change .range-input': 'onRangeInputChange'
     },
 
-    rangeInputAttrs: ['xmin', 'xmax', 'xfit', 'ymin', 'ymax', 'yfit'],
+    rangeInputAttrs: ['xmin', 'xmax', 'xmin-auto', 'xmax-auto', 'ymin', 'ymax', 'ymin-auto', 'ymax-auto'],
 
     initialize: function(opts){
       var _this = this;
       opts = opts || {};
       opts = $.extend({}, {
         rangeLabelFormat: '%.1e',
-        showFitCheckboxes: false
+        showAutoCheckboxes: false
       }, opts);
       this.rangeLabelFormat = opts.rangeLabelFormat;
-      this.showFitCheckboxes = opts.showFitCheckboxes;
+      this.showAutoCheckboxes = opts.showAutoCheckboxes;
       if (opts.formatter){
         this.formatter = opts.formatter;
       }
@@ -70,9 +70,9 @@ function($, Backbone, _, ui, _s, template){
       var _this = this;
       $(this.el).html(_.template(template, {model: this.model}));
 
-      if (! this.showFitCheckboxes){
+      if (! this.showAutoCheckboxes){
         $.each(['x', 'y'], function(i, xy){
-          $('.' + xy + 'fit-input', _this.el).remove();
+          $('.' + xy + '-inputs .auto', _this.el).remove();
         });
       }
 
@@ -107,10 +107,10 @@ function($, Backbone, _, ui, _s, template){
       var $input = $(e.currentTarget);
       var attr = $input.data('attr');
       var value = null;
-      if (attr == 'xfit' || attr == 'yfit'){
-        var xy = attr.substr(0,1);
+      if (attr.indexOf('-auto') !== -1){
+        var minmaxId = attr.substr(0,4);
         var value = $input.is(':checked');
-        $('.' + xy + '-inputs input[type="text"]', this.el).each(
+        $('.' + minmaxId + '-input input[type="text"]', this.el).each(
           function(i, textEl){
             $(textEl).prop('disabled', value);
           }

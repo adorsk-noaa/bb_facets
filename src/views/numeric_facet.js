@@ -69,7 +69,7 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
         formatter: function(f, v){
           return _this.formatter(f,v);
         },
-        showFitCheckboxes: true
+        showAutoCheckboxes: true
       });
 
       // Create histogram elements in slider's container.
@@ -148,7 +148,7 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
     },
 
     // Update range base histogram bounds if
-    // range 'fit' attrs are set.
+    // range 'auto' attrs are set.
     updateRange: function(){
       var _this = this;
       var baseHist = this.model.get('base_histogram');
@@ -156,12 +156,12 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
         var hStats = this.getHistogramStats(baseHist);
         var rangeSetObj = {};
         $.each(['x', 'y'], function(i, xy){
-          if (_this.range.get(xy + 'fit')){
-            $.each(['min', 'max'], function(i, minmax){
+          $.each(['min', 'max'], function(i, minmax){
+            if (_this.range.get(xy + minmax + '-auto')){
               var attr = xy + minmax;
               rangeSetObj[attr] = hStats[attr];
-            });
-          }
+            }
+          });
         });
         this.range.set(rangeSetObj);
       }
@@ -189,6 +189,9 @@ function($, Backbone, _, ui, _s, FacetView, RangeSliderView, body_template){
       var scale = function(xy, v){
         var xyMin = _this.range.get(xy + 'min');
         var xyMax = _this.range.get(xy + 'max');
+        if (xyMax == xyMin){
+          return 0;
+        }
         return Math.round((v - xyMin)/(xyMax - xyMin) * 100);
       };
 
