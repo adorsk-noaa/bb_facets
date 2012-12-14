@@ -27,14 +27,14 @@ function($, Backbone, _, _s, template){
 
       // If facet can be closed, add close button.
       if (! this.model.get('noClose')){
-        $('.facet-header', this.el).prepend('<span class="close-button"></span>');
+        $('.facet-header .close-cell', this.el).append('<span class="close-button"></span>');
       }
 
       // If facet has info, add info control.
       var info = this.model.get('info');
       if (info){
         var $info = $(_s.sprintf('<a class="control facet-info-button info-button" href="javascript:{}">info</a>'));
-        $info.appendTo($('.facet-header', this.el));
+        $info.appendTo($('.facet-header .controls-cell', this.el));
         var $info_content = $(_s.sprintf('<div class="content">%s</div>', this.formatter(info)));
         $info_content.appendTo($info);
       }
@@ -66,7 +66,7 @@ function($, Backbone, _, _s, template){
 
     addResetButton: function(){
       this.$reset = $('<a class="control facet-reset-button" href="javascript:{}" style="visibility:hidden;">reset</a>');
-      this.$reset.appendTo($('.facet-header', this.el));
+      this.$reset.appendTo($('.facet-header .controls-cell', this.el));
     },
 
     addInfoButton: function(){

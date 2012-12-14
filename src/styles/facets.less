@@ -23,14 +23,24 @@
       .rounded_corners(7px);
 
       > .facet-header{
+          table-layout: fixed;
           .rounded_corners_top(6px);
+          width: 100%;
           border-bottom: 1px solid @chrome_primary;
           background: @chrome_primary;
           cursor: move;
           padding: @padding_tighter;
 
-          > .close-button{
-              float: left;
+          td {
+            vertical-align: middle;
+            padding: 5px;
+          }
+
+          .close-cell {
+            width: 18px;
+
+            > .close-button{
+              display: inline-block;
               cursor: pointer;
               margin: 1px;
               width: 16px;
@@ -40,14 +50,15 @@
               @hover_offset: -16px;
               background-position: 0px @top_offset;
               &:hover { background-position: @hover_offset @top_offset; }
+            }
           }
 
-          > .title {
+          .title-cell > .title {
               padding: @padding_tighter;
               font-weight: bold;
           }
 
-          > .control{
+          .controls-cell > .control{
               float: right;
               padding-left: 5px;
               padding-right: 5px;
