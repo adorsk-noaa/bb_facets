@@ -18,7 +18,7 @@ function($, Backbone, _, _s, ui, Menus, Tabble, Util, FacetCollectionView, templ
       $(this.el).addClass('facets-editor');
 
       // Initialize sub-collections if not provided.
-      _.each(['quantity_fields', 'facets', 'predefined_facets'], function(attr){
+      _.each(['facets', 'facetDefinitions'], function(attr){
         var collection = this.model.get(attr);
         if (! collection){
           collection = new Backbone.Collection();
@@ -81,21 +81,22 @@ function($, Backbone, _, _s, ui, Menus, Tabble, Util, FacetCollectionView, templ
         _this.model.get('facets').add(facetModel);
       };
 
-      // Format menu items from predefined facets.
+      // Format menu items from facet definitions.
       var menuItems = [];
-      _.each(this.model.get('predefined_facets').models, function(facetDef){
-        var $content = $('<div>' + facetDef.get('facetDef').label + '</div>');
+      _.each(this.model.get('facetDefinitions').models, function(facetDefModel){
+        var $content = $('<div>' + facetDefModel.get('label') + '</div>');
         // Assign create facet function to content.
         $content.on('click', function(){
-          (function(def){
+          (function(defModel){
             // Create model from definition.
-            var facetModel = _this.createFacetModelFromDef(def.get('facetDef'));
+            var facetModel = facetDefModel.clone();
+            facetModel.id = facetModel.cid;
             addFacet(facetModel);
-          })(facetDef);
+          })(facetDefModel);
         });
         var menuItem = {
           content: $content,
-          id: facetDef.id
+          id: facetDefModel.id
         };
 
         // Add menu item to list.
@@ -118,18 +119,6 @@ function($, Backbone, _, _s, ui, Menus, Tabble, Util, FacetCollectionView, templ
         model: menuModel
       });
 
-    },
-
-    createFacetModelFromDef: function(facetDef){
-      var facetModel = new Backbone.Model(_.extend({
-      }, facetDef));
-
-      // Set id if none was given.
-      if (! facetModel.get('id')){
-        facetModel.set('id', facetModel.cid);
-      }
-
-      return facetModel;
     },
 
     resize: function(){
