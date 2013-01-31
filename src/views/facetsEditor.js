@@ -77,23 +77,15 @@ function($, Backbone, _, _s, ui, Menus, Tabble, Util, FacetCollectionView, templ
       // Define a function that adds a facet to the facet collection,
       // given a facet definition.
       var _this = this;
-      var addFacet = function(facetModel){
-        _this.model.get('facets').add(facetModel);
-      };
 
       // Format menu items from facet definitions.
       var menuItems = [];
       _.each(this.model.get('facetDefinitions').models, function(facetDefModel){
         var $content = $('<div>' + facetDefModel.get('label') + '</div>');
         // Assign create facet function to content.
-        $content.on('click', function(){
-          (function(defModel){
-            // Create model from definition.
-            var facetModel = facetDefModel.clone();
-            facetModel.id = facetModel.cid;
-            addFacet(facetModel);
-          })(facetDefModel);
-        });
+        $content.on('click', _.bind(function(opts){
+          this.addFacetFromDefinition(opts);
+        }, this, {defModel: facetDefModel}));
         var menuItem = {
           content: $content,
           id: facetDefModel.id
@@ -119,6 +111,12 @@ function($, Backbone, _, _s, ui, Menus, Tabble, Util, FacetCollectionView, templ
         model: menuModel
       });
 
+    },
+
+    addFacetFromDefinition: function(opts){
+      var facetModel = opts.defModel.clone();
+      facetModel.id = opts.id || facetModel.cid;
+      this.model.get('facets').add(facetModel);
     },
 
     resize: function(){
