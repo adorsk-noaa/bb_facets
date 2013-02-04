@@ -94,7 +94,12 @@ function($, Backbone, _, ui, _s, FacetView, choices_template){
         formatted_choices.push(formatted_choice);
       }, this);
 
-      return formatted_choices;
+      var sortBy = this.model.get('sort_by') || 'label';
+      var sortedChoices = _.sortBy(formatted_choices, function(choice){
+        return choice[sortBy];
+      });
+
+      return sortedChoices;
     },
 
     formatChoiceCountImages: function(choices){
@@ -132,14 +137,13 @@ function($, Backbone, _, ui, _s, FacetView, choices_template){
           leftRight = 'right';
           clazz = 'left';
         }
-        var $sbFill = $('<span class="scalebar-fill"></span>');
+        var $sbFill = $('<span class="scalebar-fill"></span>').appendTo($sbContainer);
         $sbFill.addClass( (scale < 0) ? 'left' : 'right');
         var cssOpts = {
           width: 50 + (scale * 50) + '%'
         };
         cssOpts[leftRight] = '50%';
         $sbFill.css(cssOpts);
-        $sbContainer.append($sbFill);
         images.push($sbContainer[0].outerHTML);
       });
       return images;
@@ -150,7 +154,13 @@ function($, Backbone, _, ui, _s, FacetView, choices_template){
       var total = this.model.get('total');
       _.each(choices, function(choice){
         var scale = (total == 0) ? 0 : choice['count']/total;
-        images.push(_s.sprintf("<span class='scalebar-container'><span class='scalebar-fill' style='left: 0; width:%s%%;'></span></span>", Math.round(scale * 100)));
+        var $sbContainer = $('<span class="scalebar-container sequential"></span>');
+        var $sbFill = $('<span class="scalebar-fill"></span>').appendTo($sbContainer);
+        $sbFill.css({
+          left: 0,
+          width: (scale * 100) + '%'
+        });
+        images.push($sbContainer[0].outerHTML);
       });
       return images;
     },
