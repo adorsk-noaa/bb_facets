@@ -1,99 +1,121 @@
 @import url("require:CommonStyles/styles/variables.less");
 
 .list-facet {
-    .facet-choices{
+  .facet-choices{
 
-        display: table;
-        width: 100%;
-        border-spacing: 0px .7em;
+    display: table;
+    width: 100%;
+    border-spacing: 0px .7em;
 
-        .facet-choice {
-            display: table-row;
-            clear: both;
-            color: blue;
-            cursor: pointer;
+    .facet-choice {
+      display: table-row;
+      clear: both;
+      color: blue;
+      cursor: pointer;
 
-            .cell{
-                display: table-cell;
-            }
+      .cell{
+        display: table-cell;
+      }
 
-            > .text-cell > .text {
-                padding: 0px 1em;
+      > .text-cell > .text {
+        padding: 0px 1em;
 
-                > .title {
-                }
-                > .count{
-                    padding-left: 5px;
-                    font-size: 0.85em;
-                    color: @light_grey;
-                }
-            }
-
-            > .icon-cell {
-                width: 30%;
-
-                > .icon {
-                    width: 100%;
-
-                    .count-image{
-                        width: 100%;
-                        .scalebar-container{
-                            border: thin solid @faint_grey;
-                            display: block;
-                        }
-                        .scalebar-fill{
-                            background-color: @chrome_primary
-                        }
-                    }
-                }
-            }
-
-            > .controls-cell {
-                width: 30%;
-
-                > .controls{
-                    width: 100%;
-
-                    > .control {
-                        visibility: hidden;
-                        float: right;
-                    }
-
-                    > .toggle{
-                        padding-left: 5px;
-                        font-size: 0.85em;
-                        font-weight: normal;
-                        cursor: pointer;
-                    }
-
-                    > .info {
-                        cursor: pointer;
-                    }
-                }
-            }
-
-
-            &.selected{
-
-                .text{
-                    .title{
-                        font-weight: bold;
-                        color: @selected_highlight;
-                    }
-                }
-
-                > .controls-cell > .controls > .toggle {
-                    visibility: visible;
-                }
-            }
-
-            &:hover{
-                background-color: @fill_secondary;
-
-                .controls-cell > .controls > .control{
-                    visibility: visible;
-                }
-            }
+        > .title {
         }
+        > .count{
+          padding-left: 5px;
+          font-size: 0.85em;
+          color: @light_grey;
+        }
+      }
+
+      > .icon-cell {
+        width: 30%;
+
+        > .icon {
+          width: 100%;
+
+          .count-image{
+            width: 100%;
+            height: 1em;
+          }
+
+          .scalebar-container{
+            display: block;
+            position: relative;
+            border: thin solid @faint_grey;
+            width: 100%;
+            height: 100%;
+
+            .scalebar-fill{
+              position: absolute;
+              background-color: @chrome_primary;
+              height: 100%;
+            }
+
+            &.diverging {
+              .scalebar-fill{
+                &.left {
+                  background-color: #ffbacb;
+                }
+                &.mid-line {
+                  background-color: black;
+                  z-index: 5;
+                  width: 1%;
+                  left: 49.5%;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      > .controls-cell {
+        width: 30%;
+
+        > .controls{
+          width: 100%;
+
+          > .control {
+            visibility: hidden;
+            float: right;
+          }
+
+          > .toggle{
+            padding-left: 5px;
+            font-size: 0.85em;
+            font-weight: normal;
+            cursor: pointer;
+          }
+
+          > .info {
+            cursor: pointer;
+          }
+        }
+      }
+
+
+      &.selected{
+
+        .text{
+          .title{
+            font-weight: bold;
+            color: @selected_highlight;
+          }
+        }
+
+        > .controls-cell > .controls > .toggle {
+          visibility: visible;
+        }
+      }
+
+      &:hover{
+        background-color: @fill_secondary;
+
+        .controls-cell > .controls > .control{
+          visibility: visible;
+        }
+      }
     }
+  }
 }

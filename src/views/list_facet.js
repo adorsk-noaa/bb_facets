@@ -98,15 +98,61 @@ function($, Backbone, _, ui, _s, FacetView, choices_template){
     },
 
     formatChoiceCountImages: function(choices){
-      var choice_count_images= [];
+      var scale = this.model.get('scale');
+      if (scale && scale.type  == 'diverging'){
+        return this.formatDivergingChoiceImages(choices);
+      }
+      else{
+        return this.formatSequentialChoiceImages(choices);
+      }
+    },
 
+    formatDivergingChoiceImages: function(choices){
+      var images = [];
+      var scale = this.model.get('scale');
       var total = this.model.get('total');
+      var mid = 0;
+      if (scale && typeof scale.mid != 'undefined'){
+        mid = scale.mid;
+      }
+      var distances = [];
+      _.each(['min', 'max'], function(minmax){
+        var val = Math[minmax].apply(Math, _.map(choices, function(c){return c.count}));
+        distances.push(Math.abs(val - mid));
+      });
+      var r = Math.max.apply(Math, distances);
 
       _.each(choices, function(choice){
-        var scale = (total == 0) ? 0 : choice['count']/total;
-        choice_count_images.push(_s.sprintf("<span class='scalebar-container'><span class='scalebar-fill' style='display: block; width:%s%%;'>&nbsp;</span></span>", Math.round(scale * 100)));
+        var $sbContainer = $('<span class="scalebar-container diverging"></span>');
+        $sbContainer.append($('<span class="scalebar-fill mid-line"></span>'));
+        var scale = (total == 0 || r == 0) ? 0 : choice['count']/r;
+        var leftRight = 'left';
+        var clazz = 'right';
+        if (scale < 0){
+          leftRight = 'right';
+          clazz = 'left';
+        }
+        var $sbFill = $('<span class="scalebar-fill"></span>');
+        $sbFill.addClass( (scale < 0) ? 'left' : 'right');
+        var cssOpts = {
+          width: 50 + (scale * 50) + '%'
+        };
+        cssOpts[leftRight] = '50%';
+        $sbFill.css(cssOpts);
+        $sbContainer.append($sbFill);
+        images.push($sbContainer[0].outerHTML);
       });
-      return choice_count_images;
+      return images;
+    },
+
+    formatSequentialChoiceImages: function(choices){
+      var images = []
+      var total = this.model.get('total');
+      _.each(choices, function(choice){
+        var scale = (total == 0) ? 0 : choice['count']/total;
+        images.push(_s.sprintf("<span class='scalebar-container'><span class='scalebar-fill' style='left: 0; width:%s%%;'></span></span>", Math.round(scale * 100)));
+      });
+      return images;
     },
 
     renderChoices: function(){
