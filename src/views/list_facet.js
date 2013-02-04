@@ -103,8 +103,12 @@ function($, Backbone, _, ui, _s, FacetView, choices_template){
     },
 
     formatChoiceCountImages: function(choices){
-      var scale = this.model.get('scale');
-      if (scale && scale.type  == 'diverging'){
+      var qField = this.model.get('quantity_field');
+      var scale_type = 'sequential';
+      if (qField && qField.get('scale_type')){
+        scale_type = qField.get('scale_type');
+      }
+      if (scale_type  == 'diverging'){
         return this.formatDivergingChoiceImages(choices);
       }
       else{
@@ -113,13 +117,11 @@ function($, Backbone, _, ui, _s, FacetView, choices_template){
     },
 
     formatDivergingChoiceImages: function(choices){
+      var qField = this.model.get('quantity_field');
       var images = [];
-      var scale = this.model.get('scale');
+      var mid = qField.get('scale_mid') || 0;
       var total = this.model.get('total');
-      var mid = 0;
-      if (scale && typeof scale.mid != 'undefined'){
-        mid = scale.mid;
-      }
+
       var distances = [];
       _.each(['min', 'max'], function(minmax){
         var val = Math[minmax].apply(Math, _.map(choices, function(c){return c.count}));
