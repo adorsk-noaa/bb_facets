@@ -129,23 +129,22 @@ function($, Backbone, _, ui, _s, FacetView, choices_template){
       });
       var r = Math.max.apply(Math, distances);
 
-      _.each(choices, function(choice){
-        var $sbContainer = $('<span class="scalebar-container diverging"></span>');
-        $sbContainer.append($('<span class="scalebar-fill mid-line"></span>'));
+      _.each(choices, function(choice, i){
+        //var scale = (total == 0 || r == 0) ? 0 : choice['count']/r;
         var scale = (total == 0 || r == 0) ? 0 : choice['count']/r;
-        var leftRight = 'left';
-        var clazz = 'right';
-        if (scale < 0){
-          leftRight = 'right';
-          clazz = 'left';
-        }
+        var neg = (scale < 0);
+        var $sbContainer = $('<span class="scalebar-container diverging"></span>');
+        $('<span class="scalebar-fill mid-line"></span>').appendTo($sbContainer);
         var $sbFill = $('<span class="scalebar-fill"></span>').appendTo($sbContainer);
-        $sbFill.addClass( (scale < 0) ? 'left' : 'right');
-        var cssOpts = {
-          width: 50 + (scale * 50) + '%'
-        };
-        cssOpts[leftRight] = '50%';
-        $sbFill.css(cssOpts);
+        var right = neg ? '50%' : '';
+        var left = neg ? '' : '50%';
+        console.log("neg: ", neg);
+        $sbFill.toggleClass('negative', neg);
+        $sbFill.css({
+          left: left,
+          right: right,
+          width: Math.abs((scale * 50)) + '%',
+        })
         images.push($sbContainer[0].outerHTML);
       });
       return images;

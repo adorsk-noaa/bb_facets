@@ -49,21 +49,14 @@
 
             .scalebar-fill{
               position: absolute;
-              background-color: @chrome_primary;
               height: 100%;
-            }
-
-            &.diverging {
-              .scalebar-fill{
-                &.left {
-                  background-color: #ffbacb;
-                }
-                &.mid-line {
-                  background-color: #999;
-                  z-index: 5;
-                  width: 2%;
-                  left: 49%;
-                }
+              z-index: 2;
+              &.mid-line {
+                background-color: #999;
+                z-index: 5;
+                width: 1%;
+                min-width: 1px;
+                left: 49.5%;
               }
             }
           }
@@ -117,5 +110,12 @@
         }
       }
     }
+  }
+}
+
+.scalebar-fill{
+  background-color: @chrome_primary;
+  &.negative {
+    background-color: #ffbacb;
   }
 }
