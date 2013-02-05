@@ -81,6 +81,9 @@ function($, Backbone, _, _s, ui, Menus, Tabble, Util, FacetCollectionView, templ
       // Format menu items from facet definitions.
       var menuItems = [];
       _.each(this.model.get('facetDefinitions').models, function(facetDefModel){
+        if (facetDefModel.get('noMenu')){
+          return;
+        }
         var $content = $('<div>' + facetDefModel.get('label') + '</div>');
         // Assign create facet function to content.
         $content.on('click', _.bind(function(opts){
