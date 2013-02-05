@@ -170,10 +170,10 @@ function($, Backbone, _, ui, _s, FacetView, choices_template){
       choices = this.model.get('choices');
 
       // Format the choices.
-      formatted_choices = this.formatChoices(choices);
+      this.formattedChoices = this.formatChoices(choices);
 
       // Update choice elements.
-      choices_html = _.template(choices_template, {choices: formatted_choices, choice_controls: this.choice_controls});
+      choices_html = _.template(choices_template, {choices: this.formattedChoices, choice_controls: this.choice_controls});
       $('.facet-choices', $(this.el)).html(choices_html);
 
       // Re-select choices which are still present.
@@ -199,10 +199,8 @@ function($, Backbone, _, ui, _s, FacetView, choices_template){
 
     getSelection: function(){
       var selection = [];
-      _.each(this.selection.toJSON(), function(selected, choice_id){
-        if (selected){
-          selection.push(choice_id);
-        }
+      _.each(this.selection.toJSON(), function(formattedChoice){
+        selection.push(formattedChoice);
       });
       return selection;
     },
@@ -217,14 +215,22 @@ function($, Backbone, _, ui, _s, FacetView, choices_template){
         this.selection.unset(choice_id);
       }
       else{
-        this.selection.set(choice_id, true);
+        var formattedSelection;
+        for (var i in this.formattedChoices){
+          var formattedChoice = this.formattedChoices[i];
+          if (formattedChoice.id == choice_id){
+            formattedSelection = formattedChoice;
+            break;
+          }
+        }
+        this.selection.set(choice_id, formattedSelection);
       }
     },
 
     onSelectionChange: function(){
       _.each(this.model.get('choices'), function(choice){
         $choice_widget = this.getChoiceWidgetById(choice.id);
-        var selected = this.selection.get(choice.id);
+        var selected = Boolean(this.selection.get(choice.id));
         this.setChoiceWidgetState($choice_widget, selected);
       }, this);
 
@@ -255,12 +261,8 @@ function($, Backbone, _, ui, _s, FacetView, choices_template){
 
     updateResetButton: function(){
       // If anything was checked, show reset button.
-      var visibility = 'hidden';
-      _.each(this.selection.toJSON(), function(selected, choice_id){
-        if (selected){
-          visibility = 'visible';
-        }
-      }, this);
+      var numSelections = _.size(this.selection.toJSON());
+      var visibility = numSelections ? 'visible' : 'hidden';
       $('.facet-reset-button', this.el).css('visibility',  visibility);
     },
 
