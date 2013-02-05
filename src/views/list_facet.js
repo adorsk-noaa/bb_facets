@@ -138,7 +138,6 @@ function($, Backbone, _, ui, _s, FacetView, choices_template){
         var $sbFill = $('<span class="scalebar-fill"></span>').appendTo($sbContainer);
         var right = neg ? '50%' : '';
         var left = neg ? '' : '50%';
-        console.log("neg: ", neg);
         $sbFill.toggleClass('negative', neg);
         $sbFill.css({
           left: left,
