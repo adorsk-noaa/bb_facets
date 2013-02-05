@@ -84,7 +84,7 @@ function($, Backbone, _, _s, ui, Menus, Tabble, Util, FacetCollectionView, templ
         if (facetDefModel.get('noMenu')){
           return;
         }
-        var $content = $('<div>' + facetDefModel.get('label') + '</div>');
+        var $content = $('<div class="facet-launcher">' + facetDefModel.get('label') + '</div>');
         // Assign create facet function to content.
         $content.on('click', _.bind(function(opts){
           this.addFacetFromDefinition(opts);
@@ -111,7 +111,7 @@ function($, Backbone, _, _s, ui, Menus, Tabble, Util, FacetCollectionView, templ
       // Create menu view.
       var menuView = new Menus.views.TooltipMenuView({
         el: $('.add-facet-button', this.el),
-        model: menuModel
+        model: menuModel,
       });
 
     },
