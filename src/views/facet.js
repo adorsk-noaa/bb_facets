@@ -30,13 +30,20 @@ function($, Backbone, _, _s, template){
         $('.facet-header .close-cell', this.el).append('<span class="close-button"></span>');
       }
 
-      // If facet has info, add info control.
+      // If facet has info or info link, add info control.
+      var infoLink = this.model.get('infoLink');
       var info = this.model.get('info');
-      if (info){
+      if (infoLink || info){
         var $info = $(_s.sprintf('<a class="control facet-info-button info-button" href="javascript:{}">info</a>'));
         $info.appendTo($('.facet-header .controls-cell', this.el));
-        var $info_content = $(_s.sprintf('<div class="content">%s</div>', this.formatter(info)));
-        $info_content.appendTo($info);
+        if (infoLink){
+          $info.attr('href', this.formatter(infoLink));
+          $info.attr('target', '_blank');
+        }
+        else{
+          var $info_content = $(_s.sprintf('<div class="content">%s</div>', this.formatter(info)));
+          $info_content.appendTo($info);
+        }
       }
     },
 
