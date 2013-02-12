@@ -121,16 +121,13 @@ function($, Backbone, _, ui, _s, FacetView, choices_template){
       var images = [];
       var mid = qField.get('scale_mid') || 0;
       var total = this.model.get('total');
+      if (! $.isNumeric(total)){
+        total = 0;
+      }
 
-      var distances = [];
-      _.each(['min', 'max'], function(minmax){
-        var val = Math[minmax].apply(Math, _.map(choices, function(c){return c.count}));
-        distances.push(Math.abs(val - mid));
-      });
-      var r = Math.max.apply(Math, distances);
+      var r = Math.abs(total);
 
       _.each(choices, function(choice, i){
-        //var scale = (total == 0 || r == 0) ? 0 : choice['count']/r;
         var scale = (total == 0 || r == 0) ? 0 : choice['count']/r;
         var neg = (scale < 0);
         var $sbContainer = $('<span class="scalebar-container diverging"></span>');
